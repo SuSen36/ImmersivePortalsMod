@@ -12,7 +12,7 @@ import qouteall.imm_ptl.core.portal.global_portals.GlobalPortalStorage;
 import qouteall.imm_ptl.core.teleportation.CollisionHelper;
 import qouteall.imm_ptl.core.teleportation.ServerTeleportationManager;
 import qouteall.q_misc_util.Helper;
-import qouteall.q_misc_util.LifecycleHack;
+import qouteall.q_misc_util.MiscGlobals;
 
 public class IPModMain {
     
@@ -61,8 +61,8 @@ public class IPModMain {
         RotationAnimation.init();
         NormalAnimation.init();
         
-        LifecycleHack.markNamespaceStable("immersive_portals");
-        LifecycleHack.markNamespaceStable("imm_ptl");
+        MiscGlobals.stableNamespaces.add("immersive_portals");
+        MiscGlobals.stableNamespaces.add("imm_ptl");
     }
     
 }

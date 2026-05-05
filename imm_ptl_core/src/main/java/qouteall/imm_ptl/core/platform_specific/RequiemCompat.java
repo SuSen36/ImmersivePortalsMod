@@ -46,8 +46,7 @@ public class RequiemCompat {
         
         method_getPossessedEntity = Helper.noError(() ->
             class_PossessionComponent.getDeclaredMethod("getPossessedEntity"));
-        
-        
+
     }
     
     public static Mob getPossessedEntity(Player player) {

@@ -2,9 +2,7 @@ package qouteall.imm_ptl.core.portal;
 
 public enum IntraClusterRelation {
     SAME(false, false),
-    FLIPPED(true, false),
-    REVERSE(false, true),
-    PARALLEL(true, true);
+    REVERSE(false, true);
     
     public final boolean isFlipped;
     public final boolean isReverse;

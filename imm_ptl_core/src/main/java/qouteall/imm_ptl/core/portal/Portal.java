@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -61,6 +62,14 @@ import java.util.stream.Collectors;
  */
 public class Portal extends Entity implements PortalLike, IPEntityEventListenableEntity {
     public static EntityType<Portal> entityType;
+    
+    public static record OverlayInfo(
+        BlockState blockState,
+        double opacity,
+        double offset,
+        @Nullable Quaternion rotation
+    ) {
+    }
     
     public static final UUID nullUUID = Util.NIL_UUID;
     private static final AABB nullBox = new AABB(0, 0, 0, 0, 0, 0);
@@ -191,6 +200,27 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
     public boolean doRenderPlayer = true;
     
     /**
+     * If true, the portal renders content on both sides (front and back).
+     * The back face uses axisH negated orientation, same destination.
+     * Replaces the old "flipped portal" entity.
+     */
+    public boolean isBifaced = false;
+    
+    /**
+     * If true, the portal can teleport entities from both sides.
+     * Entities crossing from back to front will also be teleported.
+     * Replaces the old "reverse portal" entity for same-dimension back-face teleportation.
+     */
+    public boolean isBidirectional = false;
+    
+    /**
+     * Client-side transient flag indicating this portal is being rendered from its back face.
+     * Set during portal collection, used by rendering transformation methods.
+     */
+    @Environment(EnvType.CLIENT)
+    public transient boolean renderingBackFace = false;
+    
+    /**
      * If it's invisible, it will not be rendered. But collision, teleportation and chunk loading will still work.
      */
     protected boolean visible = true;
@@ -269,6 +299,44 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
             contentDirection = transformLocalVecNonScale(getNormal().scale(-1));
         }
         return contentDirection;
+    }
+    
+    public boolean isViewingFromBack(Vec3 cameraPos) {
+        return isBifaced && !isInFrontOfPortal(cameraPos);
+    }
+    
+    private void withFlippedAxes(Runnable action) {
+        Vec3 savedAxisH = axisH;
+        Vec3 savedNormal = normal;
+        Vec3 savedContentDirection = contentDirection;
+        
+        axisH = axisH.scale(-1);
+        normal = null;
+        contentDirection = null;
+        
+        action.run();
+        
+        axisH = savedAxisH;
+        normal = savedNormal;
+        contentDirection = savedContentDirection;
+    }
+    
+    public Vec3 getBackContentDirection() {
+        final Vec3[] result = new Vec3[1];
+        withFlippedAxes(() -> result[0] = getContentDirection());
+        return result[0];
+    }
+    
+    public Vec3 transformPointFlipped(Vec3 pos) {
+        final Vec3[] result = new Vec3[1];
+        withFlippedAxes(() -> result[0] = transformPoint(pos));
+        return result[0];
+    }
+    
+    public Vec3 inverseTransformPointFlipped(Vec3 point) {
+        final Vec3[] result = new Vec3[1];
+        withFlippedAxes(() -> result[0] = inverseTransformPoint(point));
+        return result[0];
     }
     
     /**
@@ -476,6 +544,11 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
     @Override
     public boolean isVisible() {
         return visible;
+    }
+    
+    @Nullable
+    public OverlayInfo getActualOverlay() {
+        return null;
     }
     
     public void setIsVisible(boolean visible) {
@@ -706,6 +779,20 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
             visible = true;
         }
         
+        if (compoundTag.contains("isBifaced")) {
+            isBifaced = compoundTag.getBoolean("isBifaced");
+        }
+        else {
+            isBifaced = false;
+        }
+        
+        if (compoundTag.contains("isBidirectional")) {
+            isBidirectional = compoundTag.getBoolean("isBidirectional");
+        }
+        else {
+            isBidirectional = false;
+        }
+        
         animation.readFromTag(compoundTag);
         
         readPortalDataSignal.emit(this, compoundTag);
@@ -765,6 +852,9 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
         compoundTag.putBoolean("doRenderPlayer", doRenderPlayer);
         
         compoundTag.putBoolean("isVisible", visible);
+        
+        compoundTag.putBoolean("isBifaced", isBifaced);
+        compoundTag.putBoolean("isBidirectional", isBidirectional);
         
         if (commandsOnTeleported != null) {
             ListTag list = new ListTag();
@@ -1203,7 +1293,10 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
         double lastDistance = getDistanceToPlane(from);
         double nowDistance = getDistanceToPlane(to);
         
-        if (!(lastDistance > 0 && nowDistance < 0)) {
+        boolean crossedFrontToBack = lastDistance > 0 && nowDistance < 0;
+        boolean crossedBackToFront = isBidirectional && lastDistance < 0 && nowDistance > 0;
+        
+        if (!crossedFrontToBack && !crossedBackToFront) {
             return null;
         }
         
@@ -1330,12 +1423,18 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
     
     @Override
     public boolean isRoughlyVisibleTo(Vec3 cameraPos) {
+        if (isBifaced) {
+            return true;
+        }
         return isInFrontOfPortal(cameraPos);
     }
     
     @Nullable
     @Override
     public Plane getInnerClipping() {
+        if (isBifaced && renderingBackFace) {
+            return new Plane(getDestPos(), getBackContentDirection());
+        }
         return new Plane(getDestPos(), getContentDirection());
     }
     
@@ -1481,11 +1580,9 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
     }
     
     
-    // Scaling does not interfere camera transformation
     @Override
     @Nullable
     public Matrix4f getAdditionalCameraTransformation() {
-        
         return PortalRenderer.getPortalTransformation(this);
     }
     
@@ -1665,29 +1762,12 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
     
     public AnimationView getAnimationView() {
         PortalExtension extension = PortalExtension.get(this);
-        if (extension.flippedPortal != null) {
-            if (extension.flippedPortal.animation.hasRunningAnimationDriver()) {
-                return new AnimationView(
-                    this, extension.flippedPortal,
-                    IntraClusterRelation.FLIPPED
-                );
-            }
-        }
     
         if (extension.reversePortal != null) {
             if (extension.reversePortal.animation.hasRunningAnimationDriver()) {
                 return new AnimationView(
                     this, extension.reversePortal,
                     IntraClusterRelation.REVERSE
-                );
-            }
-        }
-    
-        if (extension.parallelPortal != null) {
-            if (extension.parallelPortal.animation.hasRunningAnimationDriver()) {
-                return new AnimationView(
-                    this, extension.parallelPortal,
-                    IntraClusterRelation.PARALLEL
                 );
             }
         }
@@ -1757,21 +1837,9 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
         
         PortalExtension portalExtension = PortalExtension.get(this);
         
-        if (portalExtension.flippedPortal != null) {
-            if (portalExtension.flippedPortal.animation.hasAnimationDriver()) {
-                return portalExtension.flippedPortal;
-            }
-        }
-        
         if (portalExtension.reversePortal != null) {
             if (portalExtension.reversePortal.animation.hasAnimationDriver()) {
                 return portalExtension.reversePortal;
-            }
-        }
-        
-        if (portalExtension.parallelPortal != null) {
-            if (portalExtension.parallelPortal.animation.hasAnimationDriver()) {
-                return portalExtension.parallelPortal;
             }
         }
         

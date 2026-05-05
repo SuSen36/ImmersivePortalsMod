@@ -2,7 +2,6 @@ package qouteall.imm_ptl.core.api;
 
 import net.minecraft.core.Direction;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.portal.Portal;
@@ -30,10 +29,10 @@ public class PortalAPI {
     public static DQuaternion getPortalOrientationQuaternion(Portal portal) {
         return PortalManipulation.getPortalOrientationQuaternion(portal.axisW, portal.axisH);
     }
+    
     public static <T extends Portal> T createFlippedPortal(T portal) {
-        return (T) PortalManipulation.createFlippedPortal(
-            portal, (EntityType<? extends Portal>) portal.getType()
-        );
+        portal.isBifaced = true;
+        return portal;
     }
     
     

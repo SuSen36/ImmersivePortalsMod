@@ -53,6 +53,7 @@
   "imm_ptl.portal_helper_tooltip": "建造两个框架，用打火石点燃",
   "imm_ptl.incompatible_shape": "[沉浸传送门] 无法转换传送门，因为形状不兼容",
   "imm_ptl.enable_nether_portal_overlay": "启用地狱传送门外附材质",
+  "imm_ptl.enable_end_portal_overlay": "启用末地传送门外附材质",
   "imm_ptl.increase_loading_range_gradually": "逐渐提高加载距离",
   "imm_ptl.dim_stack_add": "添加",
   "imm_ptl.dim_stack_remove": "删除",

@@ -32,7 +32,8 @@ public class IPConfig {
     public boolean enableAlternateDimensions = true;
     public boolean reducedPortalRendering = false;
     public boolean visibilityPrediction = true;
-    public boolean netherPortalOverlay = false;
+    public boolean netherPortalOverlay = true;
+    public boolean endPortalOverlay = true;
     public int scaleLimit = 30;
     public boolean easeCreativePermission = true;
     public boolean easeCommandStickPermission = false;
@@ -141,6 +142,7 @@ public class IPConfig {
         IPGlobal.reducedPortalRendering = reducedPortalRendering;
         IPGlobal.offsetOcclusionQuery = visibilityPrediction;
         IPGlobal.netherPortalOverlay = netherPortalOverlay;
+        IPGlobal.endPortalOverlay = endPortalOverlay;
         IPGlobal.scaleLimit = scaleLimit;
         IPGlobal.easeCreativePermission = easeCreativePermission;
         IPGlobal.enableSharedBlockMeshBuffers = sharedBlockMeshBufferOptimization;

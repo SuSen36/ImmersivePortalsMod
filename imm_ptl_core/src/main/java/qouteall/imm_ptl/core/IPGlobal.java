@@ -81,7 +81,9 @@ public class IPGlobal {
     
     public static boolean forceMergePortalRendering = false;
     
-    public static boolean netherPortalOverlay = false;
+    public static boolean netherPortalOverlay = true;
+    
+    public static boolean endPortalOverlay = true;
     
     public static boolean debugDisableFog = false;
     

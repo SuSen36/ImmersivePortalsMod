@@ -74,9 +74,14 @@ public abstract class PortalRenderer {
         });
         
         List<PortalLike> portalsToRender = new ArrayList<>();
+        Vec3 collectCameraPos = TransformationManager.getIsometricAdjustedCameraPos();
+        
         List<Portal> globalPortals = GlobalPortalStorage.getGlobalPortals(client.level);
         for (Portal globalPortal : globalPortals) {
             if (!shouldSkipRenderingPortal(globalPortal, frustumSupplier)) {
+                if (globalPortal.isBifaced) {
+                    globalPortal.renderingBackFace = !globalPortal.isInFrontOfPortal(collectCameraPos);
+                }
                 portalsToRender.add(globalPortal);
             }
         }
@@ -85,6 +90,10 @@ public abstract class PortalRenderer {
             if (e instanceof Portal) {
                 Portal portal = (Portal) e;
                 if (!shouldSkipRenderingPortal(portal, frustumSupplier)) {
+                    
+                    if (portal.isBifaced) {
+                        portal.renderingBackFace = !portal.isInFrontOfPortal(collectCameraPos);
+                    }
                     
                     PortalLike renderingDelegate = portal.getRenderingDelegate();
                     

@@ -99,7 +99,10 @@ public class CollisionHelper {
     public static boolean canCollideWithPortal(Entity entity, Portal portal, float partialTick) {
         if (portal.canTeleportEntity(entity)) {
             Vec3 cameraPosVec = entity.getEyePosition(partialTick);
-            if (portal.isInFrontOfPortal(cameraPosVec)) {
+            boolean inFront = portal.isInFrontOfPortal(cameraPosVec);
+            boolean behind = portal.isBidirectional && !inFront;
+            
+            if (inFront || behind) {
                 PortalLike collisionHandlingUnit = getCollisionHandlingUnit(portal);
                 boolean isInGroup = collisionHandlingUnit != portal;
                 if (isInGroup) {
@@ -152,7 +155,6 @@ public class CollisionHelper {
         AABB originalBoundingBox,
         int portalLayer
     ) {
-        // limit max recursion layer
         if (portalLayer >= 100) {
             return attemptedMove;
         }
@@ -161,9 +163,16 @@ public class CollisionHelper {
             return attemptedMove;
         }
         
-        Vec3 transformedAttemptedMove = collidingPortal.transformLocalVec(attemptedMove);
+        boolean crossingFromBack = collidingPortal.isBidirectional
+            && !collidingPortal.isInFrontOfPortal(entity.position());
         
-        AABB boxOtherSide = transformBox(collidingPortal, originalBoundingBox);
+        Vec3 transformedAttemptedMove = crossingFromBack
+            ? collidingPortal.transformLocalVecNonScale(attemptedMove).scale(-collidingPortal.scaling)
+            : collidingPortal.transformLocalVec(attemptedMove);
+        
+        AABB boxOtherSide = crossingFromBack
+            ? Helper.transformBox(originalBoundingBox, collidingPortal::transformPointFlipped)
+            : transformBox(collidingPortal, originalBoundingBox);
         if (boxOtherSide == null) {
             return attemptedMove;
         }
@@ -174,7 +183,9 @@ public class CollisionHelper {
             if (entity instanceof Player && entity.level.isClientSide()) {
                 informClientStagnant();
             }
-            Vec3 innerDirection = collidingPortal.getNormal().scale(-1);
+            Vec3 innerDirection = crossingFromBack
+                ? collidingPortal.getNormal()
+                : collidingPortal.getNormal().scale(-1);
             
             if (attemptedMove.dot(innerDirection) < 0) {
                 return attemptedMove;
@@ -196,7 +207,6 @@ public class CollisionHelper {
                 && Portal.isFlippedPortal(collidingPortal, p)
         );
         
-        //switch world and check collision
         Level oldWorld = entity.level;
         Vec3 oldPos = entity.position();
         Vec3 oldLastTickPos = McHelper.lastTickPosOf(entity);
@@ -216,9 +226,13 @@ public class CollisionHelper {
                 );
             }
             
+            Vec3 contentDir = crossingFromBack
+                ? collidingPortal.getBackContentDirection()
+                : collidingPortal.getContentDirection();
+            
             Vec3 collided = handleCollisionWithClipping(
                 entity, transformedAttemptedMove,
-                collidingPortal.getDestPos(), collidingPortal.getContentDirection()
+                collidingPortal.getDestPos(), contentDir
             );
             
             collided = new Vec3(
@@ -227,7 +241,9 @@ public class CollisionHelper {
                 correctXZCoordinate(transformedAttemptedMove.z, collided.z)
             );
             
-            Vec3 result = collidingPortal.inverseTransformLocalVec(collided);
+            Vec3 result = crossingFromBack
+                ? collidingPortal.inverseTransformLocalVecNonScale(collided).scale(-1.0 / collidingPortal.scaling)
+                : collidingPortal.inverseTransformLocalVec(collided);
             
             return result;
         } finally {
@@ -289,6 +305,10 @@ public class CollisionHelper {
     ) {
         Vec3 clippingPlanePos = collidingPortal.getOriginPos();
         Vec3 clippingPlaneNormal = collidingPortal.getNormal();
+        
+        if (collidingPortal.isBidirectional && !collidingPortal.isInFrontOfPortal(entity.position())) {
+            clippingPlaneNormal = clippingPlaneNormal.scale(-1);
+        }
         
         return handleCollisionWithClipping(entity, attemptedMove, clippingPlanePos, clippingPlaneNormal);
     }
@@ -427,13 +447,17 @@ public class CollisionHelper {
         AABB originalBox,
         Vec3 attemptedMove
     ) {
-        //cut the collision box a little bit more for horizontal portals
-        //because the box will be stretched by attemptedMove when calculating collision
         Vec3 clippingPos = portal.getOriginPos().subtract(attemptedMove);
+        Vec3 clippingNormal = portal.getNormal();
+        if (portal.isBidirectional && !portal.isInFrontOfPortal(portal.getOriginPos().add(
+            originalBox.getCenter().subtract(portal.getOriginPos())
+        ))) {
+            clippingNormal = clippingNormal.scale(-1);
+        }
         return clipBox(
             originalBox,
             clippingPos,
-            portal.getNormal()
+            clippingNormal
         );
     }
     

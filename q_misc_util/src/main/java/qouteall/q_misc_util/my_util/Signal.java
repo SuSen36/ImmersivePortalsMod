@@ -15,7 +15,7 @@ public class Signal {
     public void emit() {
         isEmitting = true;
         try {
-            funcList.forEach(runnable -> runnable.run());
+            funcList.forEach(Runnable::run);
         }
         finally {
             isEmitting = false;

@@ -103,7 +103,11 @@ public class IPConfigGUI {
         BooleanListEntry entryNetherPortalOverlay = builder.entryBuilder().startBooleanToggle(
             Component.translatable("imm_ptl.enable_nether_portal_overlay"),
             currConfig.netherPortalOverlay
-        ).setDefaultValue(false).build();
+        ).setDefaultValue(true).build();
+        BooleanListEntry entryEndPortalOverlay = builder.entryBuilder().startBooleanToggle(
+            Component.translatable("imm_ptl.enable_end_portal_overlay"),
+            currConfig.endPortalOverlay
+        ).setDefaultValue(true).build();
         BooleanListEntry entryLightVanillaNetherPortalWhenCrouching = builder.entryBuilder().startBooleanToggle(
             Component.translatable("imm_ptl.light_vanilla_nether_portal_when_crouching"),
             currConfig.lightVanillaNetherPortalWhenCrouching
@@ -131,6 +135,7 @@ public class IPConfigGUI {
         clientSide.addEntry(entryMaxPortalLayer);
         clientSide.addEntry(entryLagAttackProof);
         clientSide.addEntry(entryNetherPortalOverlay);
+        clientSide.addEntry(entryEndPortalOverlay);
         clientSide.addEntry(entryCompatibilityRenderMode);
         clientSide.addEntry(entryEnableCrossPortalSound);
         clientSide.addEntry(entryReducedPortalRendering);
@@ -175,6 +180,7 @@ public class IPConfigGUI {
                 newConfig.looseMovementCheck = entryLooseMovementCheck.getValue();
                 newConfig.visibilityPrediction = entryVisibilityPrediction.getValue();
                 newConfig.netherPortalOverlay = entryNetherPortalOverlay.getValue();
+                newConfig.endPortalOverlay = entryEndPortalOverlay.getValue();
                 newConfig.lightVanillaNetherPortalWhenCrouching = entryLightVanillaNetherPortalWhenCrouching.getValue();
                 newConfig.enableWarning = entryEnableWarning.getValue();
                 newConfig.enableMirrorCreation = entryEnableMirrorCreation.getValue();

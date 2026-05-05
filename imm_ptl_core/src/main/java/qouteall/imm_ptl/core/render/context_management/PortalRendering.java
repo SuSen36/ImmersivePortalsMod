@@ -101,7 +101,12 @@ public class PortalRendering {
     public static Vec3 getRenderingCameraPos() {
         Vec3 pos = RenderStates.originalCamera.getPosition();
         for (PortalLike portal : portalLayers) {
-            pos = portal.transformPoint(pos);
+            if (portal instanceof Portal p && p.renderingBackFace && p.isBifaced) {
+                pos = p.transformPointFlipped(pos);
+            }
+            else {
+                pos = portal.transformPoint(pos);
+            }
         }
         return pos;
     }

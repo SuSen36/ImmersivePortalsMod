@@ -108,12 +108,13 @@ public class RendererUsingFrameBuffer extends PortalRenderer {
         PoseStack matrixStack
     ) {
         FrontClipping.updateInnerClipping(matrixStack);
+        boolean isRenderingBackFace = portal instanceof Portal p && p.renderingBackFace && p.isBifaced;
         return QueryManager.renderAndGetDoesAnySamplePass(() -> {
             ViewAreaRenderer.renderPortalArea(
                 portal, Vec3.ZERO,
                 matrixStack.last().pose(),
                 RenderSystem.getProjectionMatrix(),
-                true, true,
+                !isRenderingBackFace, true,
                 true);
         });
     }

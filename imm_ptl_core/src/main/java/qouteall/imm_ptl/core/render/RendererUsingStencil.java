@@ -166,25 +166,21 @@ public class RendererUsingStencil extends PortalRenderer {
     ) {
         int outerPortalStencilValue = PortalRendering.getPortalLayer();
         
-        //is the mask here different from the mask of glStencilMask?
         GL11.glStencilFunc(GL_EQUAL, outerPortalStencilValue, 0xFF);
         
-        //if stencil and depth test pass, the data in stencil buffer will increase by 1
         GL11.glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
-        //NOTE about GL_INCR:
-        //if multiple triangles occupy the same pixel and passed stencil and depth tests,
-        //its stencil value will still increase by one
         
         GL11.glStencilMask(0xFF);
         
-        // update it before pushing
         FrontClipping.updateInnerClipping(matrixStack);
+        
+        boolean isRenderingBackFace = portal instanceof Portal p && p.renderingBackFace && p.isBifaced;
         
         ViewAreaRenderer.renderPortalArea(
             portal, Vec3.ZERO,
             matrixStack.last().pose(),
             RenderSystem.getProjectionMatrix(),
-            true, true,
+            !isRenderingBackFace, true,
             true);
     }
     

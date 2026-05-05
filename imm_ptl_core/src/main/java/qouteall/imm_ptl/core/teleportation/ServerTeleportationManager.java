@@ -152,7 +152,10 @@ public class ServerTeleportationManager {
             notifyChasersForPlayer(player, portal);
             
             ResourceKey<Level> dimensionTo = portal.dimensionTo;
-            Vec3 newEyePos = portal.transformPoint(oldEyePos);
+            boolean crossingFromBack = portal.isBidirectional && !portal.isInFrontOfPortal(oldEyePos);
+            Vec3 newEyePos = crossingFromBack
+                ? portal.transformPointFlipped(oldEyePos)
+                : portal.transformPoint(oldEyePos);
             
             teleportPlayer(player, dimensionTo, newEyePos);
             
@@ -506,9 +509,6 @@ public class ServerTeleportationManager {
     }
     
     private static Vec3 getRegularEntityTeleportedEyePos(Entity entity, Portal portal) {
-        // the teleportation is delayed by 1 tick
-        // the entity may be behind the portal or in front of the portal at this time
-        
         Vec3 eyePosThisTick = McHelper.getEyePos(entity);
         Vec3 eyePosLastTick = McHelper.getLastTickEyePos(entity);
         
@@ -524,7 +524,17 @@ public class ServerTeleportationManager {
             collidingPoint = portal.getPointProjectedToPlane(eyePosThisTick);
         }
         
-        Vec3 result = portal.transformPoint(collidingPoint).add(portal.getContentDirection().scale(0.05));
+        boolean crossingFromBack = portal.isBidirectional && !portal.isInFrontOfPortal(eyePosLastTick);
+        
+        Vec3 transformedPoint = crossingFromBack
+            ? portal.transformPointFlipped(collidingPoint)
+            : portal.transformPoint(collidingPoint);
+        
+        Vec3 contentDir = crossingFromBack
+            ? portal.getBackContentDirection()
+            : portal.getContentDirection();
+        
+        Vec3 result = transformedPoint.add(contentDir.scale(0.05));
         return result;
     }
     

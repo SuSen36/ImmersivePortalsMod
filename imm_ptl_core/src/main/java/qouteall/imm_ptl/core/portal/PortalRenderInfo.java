@@ -225,9 +225,12 @@ public class PortalRenderInfo {
             
             thisFrameQuery.performQueryAnySamplePassed(queryRendering);
             
+            boolean forceDirectQuery = portal instanceof Portal p && p.isBifaced;
+            
             boolean noPredict =
                 renderInfo.isFrequentlyMispredicted() ||
-                    QueryManager.queryStallCounter <= 3;
+                    QueryManager.queryStallCounter <= 3 ||
+                    forceDirectQuery;
             
             if (lastFrameQuery != null) {
                 boolean lastFrameVisible = lastFrameQuery.fetchQueryResult();
@@ -343,6 +346,9 @@ public class PortalRenderInfo {
             return true;
         }
         if (!p.isVisible()) {
+            return false;
+        }
+        if (p.isBifaced) {
             return false;
         }
         

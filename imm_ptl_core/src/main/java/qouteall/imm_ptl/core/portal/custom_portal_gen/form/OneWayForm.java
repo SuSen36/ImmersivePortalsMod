@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 import qouteall.imm_ptl.core.McHelper;
-import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.portal.custom_portal_gen.CustomPortalGeneration;
 import qouteall.imm_ptl.core.portal.custom_portal_gen.SimpleBlockPredicate;
 import qouteall.imm_ptl.core.portal.nether_portal.BlockPortalShape;
@@ -99,12 +98,8 @@ public class OneWayForm extends PortalGenForm {
         GeneralBreakablePortal[] resultPortals = null;
         
         if (biFaced) {
-            GeneralBreakablePortal flippedPortal = PortalAPI.createFlippedPortal(portal);
-            flippedPortal.blockPortalShape = fromShape;
-            flippedPortal.markOneWay();
-            McHelper.spawnServerEntity(flippedPortal);
-            
-            resultPortals = new GeneralBreakablePortal[]{portal, flippedPortal};
+            portal.isBifaced = true;
+            resultPortals = new GeneralBreakablePortal[]{portal};
         }
         else {
             resultPortals = new GeneralBreakablePortal[]{portal};

@@ -380,9 +380,7 @@ public class PortalAnimation {
         portal.rectifyClusterPortals(false);
         if (isTicking) {
             PortalExtension extension = PortalExtension.get(portal);
-            updateThisTickAnimatedState(extension.flippedPortal);
             updateThisTickAnimatedState(extension.reversePortal);
-            updateThisTickAnimatedState(extension.parallelPortal);
         }
         
         if (!portal.level.isClientSide()) {

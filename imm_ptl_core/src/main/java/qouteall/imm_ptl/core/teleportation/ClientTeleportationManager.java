@@ -225,7 +225,7 @@ public class ClientTeleportationManager {
             double adjustment = allowOverlappedTeleport ? -0.001 : 0.001;
             
             lastPlayerEyePos = tele.teleportationCheckpoint()
-                .add(portal.getContentDirection().scale(adjustment));
+                .add(tele.getContentDirection().scale(adjustment));
             //avoid teleporting through parallel portal due to floating point inaccuracy
             
             return true;

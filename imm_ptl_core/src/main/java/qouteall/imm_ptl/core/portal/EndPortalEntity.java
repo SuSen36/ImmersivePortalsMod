@@ -18,6 +18,7 @@ import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.IPGlobal;
@@ -26,12 +27,19 @@ import qouteall.imm_ptl.core.ducks.IEEntity;
 import qouteall.q_misc_util.Helper;
 import qouteall.q_misc_util.MiscHelper;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class EndPortalEntity extends Portal {
     public static EntityType<EndPortalEntity> entityType;
     
-    // only used by scaled view type end portal
+    private static final OverlayInfo endPortalOverlay = new OverlayInfo(
+        Blocks.END_PORTAL.defaultBlockState(),
+        0.5,
+        0,
+        null
+    );
+    
     private EndPortalEntity clientFakedReversePortal;
     
     public EndPortalEntity(
@@ -227,8 +235,6 @@ public class EndPortalEntity extends Portal {
     
     @Override
     public void onCollidingWithEntity(Entity entity) {
-        // fix https://github.com/qouteall/ImmersivePortalsMod/issues/698
-        // maybe allows easier farming of obsidian
         if (!level.isClientSide()) {
             if (entity instanceof ServerPlayer) {
                 if (IPGlobal.endPortalMode == IPGlobal.EndPortalMode.toObsidianPlatform) {
@@ -236,5 +242,14 @@ public class EndPortalEntity extends Portal {
                 }
             }
         }
+    }
+    
+    @Nullable
+    @Override
+    public OverlayInfo getActualOverlay() {
+        if (IPGlobal.endPortalOverlay) {
+            return endPortalOverlay;
+        }
+        return super.getActualOverlay();
     }
 }

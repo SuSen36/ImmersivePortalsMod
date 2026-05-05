@@ -56,12 +56,16 @@ public class PortalHelperForm extends AbstractDiligentForm {
         world.setBlockAndUpdate(info.toShape.firstFramePos, Blocks.AIR.defaultBlockState());
         
         Portal portal = info.createTemplatePortal(Portal.entityType);
+        portal.isBifaced = true;
+        portal.isBidirectional = true;
         PortalExtension.get(portal).bindCluster = true;
-        Portal flipped = PortalManipulation.createFlippedPortal(portal, Portal.entityType);
         Portal reverse = PortalManipulation.createReversePortal(portal, Portal.entityType);
-        Portal parallel = PortalManipulation.createReversePortal(flipped, Portal.entityType);
+        reverse.isBifaced = true;
+        reverse.isBidirectional = true;
         
-        Portal[] portals = {portal, flipped, reverse, parallel};
+        PortalExtension.initializeClusterBind(portal, reverse);
+        
+        Portal[] portals = {portal, reverse};
         
         for (Portal p : portals) {
             McHelper.spawnServerEntity(p);

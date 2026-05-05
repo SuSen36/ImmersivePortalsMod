@@ -27,13 +27,6 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class BreakablePortalEntity extends Portal {
-    public static record OverlayInfo(
-        BlockState blockState,
-        double opacity,
-        double offset,
-        @Nullable Quaternion rotation
-    ) {
-    }
     
     public BlockPortalShape blockPortalShape;
     public UUID reversePortalId;
@@ -108,10 +101,10 @@ public abstract class BreakablePortalEntity extends Portal {
         compoundTag.putBoolean("unbreakable", unbreakable);
         
         if (overlayInfo != null) {
-            compoundTag.put("overlayBlockState", NbtUtils.writeBlockState(overlayInfo.blockState));
-            compoundTag.putDouble("overlayOpacity", overlayInfo.opacity);
-            compoundTag.putDouble("overlayOffset", overlayInfo.offset);
-            Helper.putQuaternion(compoundTag, "overlayRotation", overlayInfo.rotation);
+            compoundTag.put("overlayBlockState", NbtUtils.writeBlockState(overlayInfo.blockState()));
+            compoundTag.putDouble("overlayOpacity", overlayInfo.opacity());
+            compoundTag.putDouble("overlayOffset", overlayInfo.offset());
+            Helper.putQuaternion(compoundTag, "overlayRotation", overlayInfo.rotation());
         }
     }
     
@@ -255,7 +248,9 @@ public abstract class BreakablePortalEntity extends Portal {
             new AABB(new BlockPos(portal.getDestPos())),
             10,
             e -> (e.getOriginPos().distanceToSqr(portal.getDestPos()) < 0.1) &&
-                e.getContentDirection().dot(portal.getNormal()) > 0.6
+                (e.isBifaced
+                    ? e.getNormal().dot(portal.getNormal()) > 0.6
+                    : e.getContentDirection().dot(portal.getNormal()) > 0.6)
         );
         return revs;
     }

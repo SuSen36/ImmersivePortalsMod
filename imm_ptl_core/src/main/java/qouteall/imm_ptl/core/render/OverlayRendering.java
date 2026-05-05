@@ -27,6 +27,7 @@ import qouteall.imm_ptl.core.CHelper;
 import qouteall.imm_ptl.core.compat.iris_compatibility.IrisInterface;
 import qouteall.imm_ptl.core.compat.sodium_compatibility.SodiumInterface;
 import qouteall.imm_ptl.core.miscellaneous.IPVanillaCopy;
+import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalLike;
 import qouteall.imm_ptl.core.portal.nether_portal.BlockPortalShape;
 import qouteall.imm_ptl.core.portal.nether_portal.BreakablePortalEntity;
@@ -43,9 +44,12 @@ public class OverlayRendering {
     
     
     public static boolean shouldRenderOverlay(PortalLike portal) {
-        if (portal instanceof BreakablePortalEntity breakablePortalEntity) {
-            if (breakablePortalEntity.getActualOverlay() != null) {
-                return breakablePortalEntity.isInFrontOfPortal(CHelper.getCurrentCameraPos());
+        if (portal instanceof Portal p) {
+            if (p.getActualOverlay() != null) {
+                if (p.isBifaced) {
+                    return true;
+                }
+                return p.isInFrontOfPortal(CHelper.getCurrentCameraPos());
             }
         }
         return false;
@@ -67,13 +71,24 @@ public class OverlayRendering {
             return;
         }
         
-        if (portal instanceof BreakablePortalEntity) {
+        if (portal instanceof BreakablePortalEntity breakablePortal) {
             renderBreakablePortalOverlay(
-                ((BreakablePortalEntity) portal),
+                breakablePortal,
                 RenderStates.tickDelta,
                 matrixStack,
                 vertexConsumerProvider
             );
+        }
+        else if (portal instanceof Portal p) {
+            Portal.OverlayInfo overlay = p.getActualOverlay();
+            if (overlay != null) {
+                renderPortalOverlayGeneric(
+                    p, overlay,
+                    RenderStates.tickDelta,
+                    matrixStack,
+                    vertexConsumerProvider
+                );
+            }
         }
     }
     
@@ -104,7 +119,7 @@ public class OverlayRendering {
         PoseStack matrixStack,
         MultiBufferSource vertexConsumerProvider
     ) {
-        BreakablePortalEntity.OverlayInfo overlay = portal.getActualOverlay();
+        Portal.OverlayInfo overlay = portal.getActualOverlay();
         BlockState blockState = overlay.blockState();
         
         Vec3 cameraPos = CHelper.getCurrentCameraPos();
@@ -122,7 +137,11 @@ public class OverlayRendering {
         
         matrixStack.pushPose();
         
-        Vec3 offset = portal.getNormal().scale(overlay.offset());
+        Vec3 normalOffset = portal.getNormal();
+        if (portal.isBifaced && portal.renderingBackFace) {
+            normalOffset = normalOffset.scale(-1);
+        }
+        Vec3 offset = normalOffset.scale(overlay.offset());
         
         Vec3 pos = portal.position();
         
@@ -132,7 +151,7 @@ public class OverlayRendering {
         RenderType renderLayer = Sheets.translucentCullBlockSheet();
         VertexConsumer buffer = vertexConsumerProvider.getBuffer(renderLayer);
         
-        List<BakedQuad> quads = getQuads(model, blockState, portal.getNormal());
+        List<BakedQuad> quads = getQuads(model, blockState, normalOffset);
         
         random.setSeed(0);
         
@@ -166,6 +185,80 @@ public class OverlayRendering {
         
         matrixStack.popPose();
         
+    }
+    
+    private static void renderPortalOverlayGeneric(
+        Portal portal,
+        Portal.OverlayInfo overlay,
+        float tickDelta,
+        PoseStack matrixStack,
+        MultiBufferSource vertexConsumerProvider
+    ) {
+        BlockState blockState = overlay.blockState();
+        
+        if (blockState == null) {
+            return;
+        }
+        
+        BlockRenderDispatcher blockRenderManager = Minecraft.getInstance().getBlockRenderer();
+        
+        matrixStack.pushPose();
+        
+        Vec3 normalOffset = portal.getNormal();
+        if (portal.isBifaced && portal.renderingBackFace) {
+            normalOffset = normalOffset.scale(-1);
+        }
+        Vec3 offset = normalOffset.scale(overlay.offset());
+        matrixStack.translate(offset.x, offset.y, offset.z);
+        
+        BakedModel model = blockRenderManager.getBlockModel(blockState);
+        RenderType renderLayer = Sheets.translucentCullBlockSheet();
+        VertexConsumer buffer = vertexConsumerProvider.getBuffer(renderLayer);
+        
+        List<BakedQuad> quads = getQuads(model, blockState, normalOffset);
+        
+        random.setSeed(0);
+        
+        int halfW = (int) Math.ceil(portal.width / 2);
+        int halfH = (int) Math.ceil(portal.height / 2);
+        Vec3 originPos = portal.getOriginPos();
+        
+        for (int bx = -halfW; bx < halfW; bx++) {
+            for (int by = -halfH; by < halfH; by++) {
+                Vec3 blockCenter = portal.getPointInPlane(
+                    bx + 0.5, by + 0.5
+                );
+                matrixStack.pushPose();
+                matrixStack.translate(
+                    blockCenter.x - originPos.x,
+                    blockCenter.y - originPos.y,
+                    blockCenter.z - originPos.z
+                );
+                
+                if (overlay.rotation() != null) {
+                    matrixStack.mulPose(overlay.rotation());
+                }
+                
+                for (BakedQuad quad : quads) {
+                    SodiumInterface.invoker.markSpriteActive(quad.getSprite());
+                    renderQuad(
+                        buffer,
+                        matrixStack.last(),
+                        quad,
+                        new float[]{1.0F, 1.0F, 1.0F, 1.0F},
+                        1.0f, 1.0f, 1.0f,
+                        new int[]{14680304, 14680304, 14680304, 14680304},
+                        OverlayTexture.NO_OVERLAY,
+                        true,
+                        ((float) overlay.opacity())
+                    );
+                }
+                
+                matrixStack.popPose();
+            }
+        }
+        
+        matrixStack.popPose();
     }
     
     /**

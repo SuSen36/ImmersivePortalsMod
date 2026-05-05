@@ -44,13 +44,20 @@ public class PortalManipulation {
     }
     
     public static void removeConnectedPortals(Portal portal, Consumer<Portal> removalInformer) {
-        removeOverlappedPortals(
-            portal.level,
-            portal.getOriginPos(),
-            portal.getNormal().scale(-1),
-            p -> Objects.equals(p.specificPlayerId, portal.specificPlayerId),
-            removalInformer
-        );
+        if (!portal.isBifaced) {
+            removeOverlappedPortals(
+                portal.level,
+                portal.getOriginPos(),
+                portal.getNormal().scale(-1),
+                p -> Objects.equals(p.specificPlayerId, portal.specificPlayerId),
+                removalInformer
+            );
+        }
+        else {
+            portal.isBifaced = false;
+            portal.isBidirectional = false;
+        }
+        
         ServerLevel toWorld = MiscHelper.getServer().getLevel(portal.dimensionTo);
         removeOverlappedPortals(
             toWorld,
@@ -69,7 +76,11 @@ public class PortalManipulation {
     }
     
     public static Portal completeBiWayPortal(Portal portal, EntityType<? extends Portal> entityType) {
+        portal.isBidirectional = true;
+        
         Portal newPortal = createReversePortal(portal, entityType);
+        newPortal.isBifaced = portal.isBifaced;
+        newPortal.isBidirectional = true;
         
         McHelper.spawnServerEntity(newPortal);
         
@@ -88,20 +99,37 @@ public class PortalManipulation {
         
         newPortal.width = portal.width * portal.scaling;
         newPortal.height = portal.height * portal.scaling;
-        newPortal.axisW = portal.axisW;
-        newPortal.axisH = portal.axisH.scale(-1);
+        
+        if (portal.isBifaced) {
+            newPortal.axisW = portal.axisW;
+            newPortal.axisH = portal.axisH;
+        }
+        else {
+            newPortal.axisW = portal.axisW;
+            newPortal.axisH = portal.axisH.scale(-1);
+        }
         
         if (portal.specialShape != null) {
             newPortal.specialShape = new GeometryPortalShape();
             initFlippedShape(newPortal, portal.specialShape, portal.scaling);
         }
         
-        newPortal.initCullableRange(
-            portal.cullableXStart * portal.scaling,
-            portal.cullableXEnd * portal.scaling,
-            -portal.cullableYStart * portal.scaling,
-            -portal.cullableYEnd * portal.scaling
-        );
+        if (portal.isBifaced) {
+            newPortal.initCullableRange(
+                portal.cullableXStart * portal.scaling,
+                portal.cullableXEnd * portal.scaling,
+                portal.cullableYStart * portal.scaling,
+                portal.cullableYEnd * portal.scaling
+            );
+        }
+        else {
+            newPortal.initCullableRange(
+                portal.cullableXStart * portal.scaling,
+                portal.cullableXEnd * portal.scaling,
+                -portal.cullableYStart * portal.scaling,
+                -portal.cullableYEnd * portal.scaling
+            );
+        }
         
         if (portal.rotation != null) {
             rotatePortalBody(newPortal, portal.rotation);
@@ -123,45 +151,20 @@ public class PortalManipulation {
     }
     
     public static Portal completeBiFacedPortal(Portal portal, EntityType<Portal> entityType) {
-        Portal newPortal = createFlippedPortal(portal, entityType);
+        portal.isBifaced = true;
         
-        McHelper.spawnServerEntity(newPortal);
-        
-        return newPortal;
-    }
-    
-    public static <T extends Portal> T createFlippedPortal(Portal portal, EntityType<T> entityType) {
-        Level world = portal.level;
-        T newPortal = entityType.create(world);
-        newPortal.dimensionTo = portal.dimensionTo;
-        newPortal.setPos(portal.getX(), portal.getY(), portal.getZ());
-        newPortal.setDestination(portal.getDestPos());
-        newPortal.specificPlayerId = portal.specificPlayerId;
-        
-        newPortal.width = portal.width;
-        newPortal.height = portal.height;
-        newPortal.axisW = portal.axisW;
-        newPortal.axisH = portal.axisH.scale(-1);
-        
-        if (portal.specialShape != null) {
-            newPortal.specialShape = new GeometryPortalShape();
-            initFlippedShape(newPortal, portal.specialShape, 1);
+        Portal existingFlipped = findFlippedPortal(portal);
+        if (existingFlipped != null) {
+            existingFlipped.remove(Entity.RemovalReason.KILLED);
         }
         
-        newPortal.initCullableRange(
-            portal.cullableXStart,
-            portal.cullableXEnd,
-            -portal.cullableYStart,
-            -portal.cullableYEnd
-        );
-        
-        newPortal.rotation = portal.rotation;
-        
-        newPortal.scaling = portal.scaling;
-        
-        copyAdditionalProperties(newPortal, portal);
-        
-        return newPortal;
+        return portal;
+    }
+    
+    @Deprecated
+    public static <T extends Portal> T createFlippedPortal(Portal portal, EntityType<T> entityType) {
+        portal.isBifaced = true;
+        return (T) portal;
     }
     
     //the new portal will not be added into world
@@ -220,7 +223,9 @@ public class PortalManipulation {
             removalInformer
         );
         
-        Portal oppositeFacedPortal = completeBiFacedPortal(portal, entityType);
+        portal.isBifaced = true;
+        portal.isBidirectional = true;
+        
         removeOverlappedPortals(
             MiscHelper.getServer().getLevel(portal.dimensionTo),
             portal.getDestPos(),
@@ -228,20 +233,20 @@ public class PortalManipulation {
             p -> Objects.equals(p.specificPlayerId, portal.specificPlayerId),
             removalInformer
         );
-        
-        Portal r1 = completeBiWayPortal(portal, entityType);
         removeOverlappedPortals(
-            MiscHelper.getServer().getLevel(oppositeFacedPortal.dimensionTo),
-            oppositeFacedPortal.getDestPos(),
-            oppositeFacedPortal.transformLocalVecNonScale(oppositeFacedPortal.getNormal().scale(-1)),
+            MiscHelper.getServer().getLevel(portal.dimensionTo),
+            portal.getDestPos(),
+            portal.transformLocalVecNonScale(portal.getNormal()),
             p -> Objects.equals(p.specificPlayerId, portal.specificPlayerId),
             removalInformer
         );
         
-        Portal r2 = completeBiWayPortal(oppositeFacedPortal, entityType);
-        addingInformer.accept(oppositeFacedPortal);
-        addingInformer.accept(r1);
-        addingInformer.accept(r2);
+        Portal reversePortal = createReversePortal(portal, entityType);
+        reversePortal.isBifaced = true;
+        reversePortal.isBidirectional = true;
+        McHelper.spawnServerEntity(reversePortal);
+        
+        addingInformer.accept(reversePortal);
     }
     
     public static void removeOverlappedPortals(
@@ -306,6 +311,8 @@ public class PortalManipulation {
         PortalExtension.get(to).bindCluster = PortalExtension.get(from).bindCluster;
         to.animation.defaultAnimation = from.animation.defaultAnimation.copy();
         to.setIsVisible(from.isVisible());
+        to.isBifaced = from.isBifaced;
+        to.isBidirectional = from.isBidirectional;
         
         if (includeSpecialProperties) {
             to.portalTag = from.portalTag;
@@ -480,7 +487,9 @@ public class PortalManipulation {
             0,
             p1 -> p1.getOriginPos().subtract(portal.getDestPos()).lengthSqr() < 0.01 &&
                 p1.getDestPos().subtract(portal.getOriginPos()).lengthSqr() < 0.01 &&
-                p1.getNormal().dot(portal.getContentDirection()) > 0.9
+                (p1.isBifaced
+                    ? p1.getNormal().dot(portal.getNormal()) > 0.9
+                    : p1.getNormal().dot(portal.getContentDirection()) > 0.9)
         ));
     }
     

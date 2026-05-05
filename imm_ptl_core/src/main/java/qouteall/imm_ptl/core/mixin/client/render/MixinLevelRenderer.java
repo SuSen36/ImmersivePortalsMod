@@ -618,12 +618,7 @@ public abstract class MixinLevelRenderer implements IEWorldRenderer {
     public ViewArea ip_getBuiltChunkStorage() {
         return viewArea;
     }
-    
-    @Override
-    public ChunkRenderDispatcher getChunkBuilder() {
-        return chunkRenderDispatcher;
-    }
-    
+
     @Override
     public void ip_myRenderEntity(
         Entity entity,

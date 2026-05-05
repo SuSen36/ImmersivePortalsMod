@@ -88,30 +88,25 @@ public class PortalGenInfo {
         ServerLevel toWorld = MiscHelper.getServer().getLevel(to);
         
         T f1 = createTemplatePortal(entityType);
-        
-        T f2 = PortalManipulation.createFlippedPortal(f1, entityType);
+        f1.isBifaced = true;
+        f1.isBidirectional = true;
         
         T t1 = PortalManipulation.createReversePortal(f1, entityType);
-        T t2 = PortalManipulation.createFlippedPortal(t1, entityType);
+        t1.isBifaced = true;
+        t1.isBidirectional = true;
         
         f1.blockPortalShape = fromShape;
-        f2.blockPortalShape = fromShape;
         t1.blockPortalShape = toShape;
-        t2.blockPortalShape = toShape;
         
         f1.reversePortalId = t1.getUUID();
         t1.reversePortalId = f1.getUUID();
-        f2.reversePortalId = t2.getUUID();
-        t2.reversePortalId = f2.getUUID();
         
-        PortalExtension.initializeClusterBind(f1, f2, t1, t2);
+        PortalExtension.initializeClusterBind(f1, t1);
         
         McHelper.spawnServerEntity(f1);
-        McHelper.spawnServerEntity(f2);
         McHelper.spawnServerEntity(t1);
-        McHelper.spawnServerEntity(t2);
         
-        return (new BreakablePortalEntity[]{f1, f2, t1, t2});
+        return (new BreakablePortalEntity[]{f1, t1});
     }
     
     public void generatePlaceholderBlocks() {

@@ -154,6 +154,9 @@ public class VerticalConnectingPortal extends GlobalTrackedPortal {
             PortalExtension.get(verticalConnectingPortal).adjustPositionAfterTeleport = false;
         }
         
+        verticalConnectingPortal.isBifaced = true;
+        verticalConnectingPortal.isBidirectional = true;
+        
         return verticalConnectingPortal;
     }
     
