@@ -13,8 +13,7 @@ import qouteall.imm_ptl.core.portal.custom_portal_gen.CustomPortalGenManagement;
 public class MixinItemStack {
     @Inject(
         method = "Lnet/minecraft/world/item/ItemStack;useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;",
-        at = @At("RETURN"),
-        cancellable = true
+        at = @At("RETURN")
     )
     private void onUseOnBlockEnded(UseOnContext context, CallbackInfoReturnable<InteractionResult> cir) {
         CustomPortalGenManagement.onItemUse(context, cir.getReturnValue());

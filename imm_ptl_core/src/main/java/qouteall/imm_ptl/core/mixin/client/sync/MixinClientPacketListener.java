@@ -24,11 +24,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import qouteall.imm_ptl.core.ClientWorldLoader;
 import qouteall.imm_ptl.core.IPCGlobal;
 import qouteall.imm_ptl.core.IPGlobal;
-import qouteall.q_misc_util.dimension.DimensionTypeSync;
 import qouteall.imm_ptl.core.ducks.IEClientPlayNetworkHandler;
 import qouteall.imm_ptl.core.ducks.IEPlayerPositionLookS2CPacket;
 import qouteall.imm_ptl.core.network.IPNetworkAdapt;
 import qouteall.q_misc_util.Helper;
+import qouteall.q_misc_util.dimension.DimensionTypeSync;
 
 import java.util.Map;
 import java.util.UUID;
@@ -60,17 +60,7 @@ public abstract class MixinClientPacketListener implements IEClientPlayNetworkHa
     public void ip_setWorld(ClientLevel world) {
         this.level = world;
     }
-    
-    @Override
-    public Map getPlayerListEntries() {
-        return playerInfoMap;
-    }
-    
-    @Override
-    public void setPlayerListEntries(Map value) {
-        playerInfoMap = value;
-    }
-    
+
     @Inject(
         method = "<init>",
         at = @At("RETURN")
@@ -204,9 +194,5 @@ public abstract class MixinClientPacketListener implements IEClientPlayNetworkHa
             }
         }
     }
-    
-    @Override
-    public void portal_setRegistryManager(RegistryAccess.Frozen arg) {
-        registryAccess = arg;
-    }
+
 }

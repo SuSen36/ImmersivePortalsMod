@@ -16,11 +16,7 @@ import qouteall.q_misc_util.Helper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 // A portal's rendering related things
 // to access the package private field of Portal, this class is not in "render" package

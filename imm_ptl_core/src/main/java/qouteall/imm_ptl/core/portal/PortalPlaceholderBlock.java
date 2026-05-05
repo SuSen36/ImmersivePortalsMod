@@ -19,8 +19,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import qouteall.imm_ptl.core.McHelper;
 import qouteall.imm_ptl.core.portal.nether_portal.BreakablePortalEntity;
 
-import java.util.Random;
-
 public class PortalPlaceholderBlock extends Block {
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
     public static final VoxelShape X_AABB = Block.box(
@@ -53,9 +51,9 @@ public class PortalPlaceholderBlock extends Block {
     public PortalPlaceholderBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(
-            (BlockState) ((BlockState) this.getStateDefinition().any()).setValue(
-                AXIS, Direction.Axis.X
-            )
+                this.getStateDefinition().any().setValue(
+                    AXIS, Direction.Axis.X
+                )
         );
     }
     
@@ -63,15 +61,11 @@ public class PortalPlaceholderBlock extends Block {
     public VoxelShape getShape(
         BlockState state, BlockGetter world, BlockPos blockPos, CollisionContext shapeContext
     ) {
-        switch ((Direction.Axis) state.getValue(AXIS)) {
-            case Z:
-                return Z_AABB;
-            case Y:
-                return Y_AABB;
-            case X:
-            default:
-                return X_AABB;
-        }
+        return switch (state.getValue(AXIS)) {
+            case Z -> Z_AABB;
+            case Y -> Y_AABB;
+            default -> X_AABB;
+        };
     }
     
     @Override

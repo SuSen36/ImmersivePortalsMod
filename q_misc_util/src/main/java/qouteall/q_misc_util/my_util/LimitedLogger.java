@@ -3,8 +3,6 @@ package qouteall.q_misc_util.my_util;
 
 import qouteall.q_misc_util.Helper;
 
-import java.util.function.Supplier;
-
 // Log error and avoid spam
 public class LimitedLogger {
     private int remain;
@@ -27,10 +25,5 @@ public class LimitedLogger {
             r.run();
         }
     }
-    
-    public void throwException(Supplier<RuntimeException> s) {
-        invoke(() -> {
-            throw s.get();
-        });
-    }
+
 }

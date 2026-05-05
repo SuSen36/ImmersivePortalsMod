@@ -36,7 +36,6 @@ import qouteall.q_misc_util.my_util.LimitedLogger;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class CollisionHelper {
     

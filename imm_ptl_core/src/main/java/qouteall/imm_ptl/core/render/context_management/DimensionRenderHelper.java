@@ -3,7 +3,6 @@ package qouteall.imm_ptl.core.render.context_management;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.world.level.Level;
-import qouteall.imm_ptl.core.ducks.IEGameRenderer;
 import qouteall.q_misc_util.Helper;
 
 public class DimensionRenderHelper {
@@ -16,8 +15,6 @@ public class DimensionRenderHelper {
         this.world = world;
         
         if (client.level == world) {
-            IEGameRenderer gameRenderer = (IEGameRenderer) client.gameRenderer;
-            
             lightmapTexture = client.gameRenderer.lightTexture();
         }
         else {

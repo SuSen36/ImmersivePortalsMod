@@ -7,7 +7,6 @@
     "common.MixinServerPlayerEntity_MA"
   ],
   "client": [
-    "client.MixinFabricClientPlayNetworkAddon",
     "client.MixinFabricInvalidateRenderStateCallback"
   ],
   "injectors": {

@@ -1,31 +1,20 @@
 package qouteall.imm_ptl.core;
 
 import com.mojang.blaze3d.platform.GlUtil;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.client.GraphicsStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import qouteall.imm_ptl.core.commands.ClientDebugCommand;
 import qouteall.imm_ptl.core.compat.IPFlywheelCompat;
 import qouteall.imm_ptl.core.compat.iris_compatibility.ExperimentalIrisPortalRenderer;
 import qouteall.imm_ptl.core.compat.iris_compatibility.IrisCompatibilityPortalRenderer;
 import qouteall.imm_ptl.core.compat.iris_compatibility.IrisInterface;
 import qouteall.imm_ptl.core.compat.iris_compatibility.IrisPortalRenderer;
-import qouteall.imm_ptl.core.miscellaneous.DubiousThings;
 import qouteall.imm_ptl.core.miscellaneous.GcMonitor;
 import qouteall.imm_ptl.core.platform_specific.IPNetworkingClient;
-import qouteall.imm_ptl.core.portal.animation.ClientPortalAnimationManagement;
 import qouteall.imm_ptl.core.portal.PortalRenderInfo;
+import qouteall.imm_ptl.core.portal.animation.ClientPortalAnimationManagement;
 import qouteall.imm_ptl.core.portal.animation.StableClientTimer;
-import qouteall.imm_ptl.core.render.CrossPortalEntityRenderer;
-import qouteall.imm_ptl.core.render.MyBuiltChunkStorage;
-import qouteall.imm_ptl.core.render.MyRenderHelper;
-import qouteall.imm_ptl.core.render.PortalRenderer;
-import qouteall.imm_ptl.core.render.RendererUsingFrameBuffer;
-import qouteall.imm_ptl.core.render.RendererUsingStencil;
-import qouteall.imm_ptl.core.render.ShaderCodeTransformation;
-import qouteall.imm_ptl.core.render.VisibleSectionDiscovery;
+import qouteall.imm_ptl.core.render.*;
 import qouteall.imm_ptl.core.render.context_management.CloudContext;
 import qouteall.imm_ptl.core.render.context_management.PortalRendering;
 import qouteall.imm_ptl.core.render.optimization.GLResourceCache;
@@ -88,21 +77,7 @@ public class IPModMainClient {
             }
         }
     }
-    
-    private static void showPreviewWarning() {
-        IPGlobal.clientTaskList.addTask(MyTaskList.withDelayCondition(
-            () -> Minecraft.getInstance().level == null,
-            MyTaskList.oneShotTask(() -> {
-                if (IPGlobal.enableWarning) {
-                    MutableComponent text = Component.translatable("imm_ptl.preview_warning").append(
-                        McHelper.getLinkText("https://github.com/qouteall/ImmersivePortalsMod/issues")
-                    );
-                    
-                    CHelper.printChat(text);
-                }
-            })
-        ));
-    }
+
     
     // TODO check whether it still have issue on Intel videocard
     private static void showIntelVideoCardWarning() {
@@ -132,8 +107,7 @@ public class IPModMainClient {
             IPCGlobal.renderer = IPCGlobal.rendererUsingStencil;
             IPCGlobal.clientTeleportationManager = new ClientTeleportationManager();
         });
-        
-        DubiousThings.init();
+
         
         CrossPortalEntityRenderer.init();
         
@@ -148,10 +122,6 @@ public class IPModMainClient {
         SharedBlockMeshBuffers.init();
         
         GcMonitor.initClient();
-        
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            ClientDebugCommand.register(dispatcher);
-        });
         
 //        showPreviewWarning();
         

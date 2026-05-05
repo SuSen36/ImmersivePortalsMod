@@ -1,11 +1,7 @@
 package qouteall.imm_ptl.core.compat.mixin;
 
 import com.mojang.blaze3d.shaders.Program;
-import me.jellysquid.mods.sodium.client.gl.shader.GlShader;
-import me.jellysquid.mods.sodium.client.gl.shader.ShaderConstants;
-import me.jellysquid.mods.sodium.client.gl.shader.ShaderLoader;
-import me.jellysquid.mods.sodium.client.gl.shader.ShaderParser;
-import me.jellysquid.mods.sodium.client.gl.shader.ShaderType;
+import me.jellysquid.mods.sodium.client.gl.shader.*;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;

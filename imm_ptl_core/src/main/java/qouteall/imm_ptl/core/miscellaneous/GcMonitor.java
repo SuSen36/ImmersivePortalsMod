@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import qouteall.imm_ptl.core.CHelper;
 import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.imm_ptl.core.McHelper;
-import qouteall.imm_ptl.core.commands.PortalDebugCommands;
 import qouteall.imm_ptl.core.platform_specific.O_O;
 import qouteall.q_misc_util.Helper;
 import qouteall.q_misc_util.MiscHelper;
@@ -80,7 +79,7 @@ public class GcMonitor {
         
         double timeFromLongPause = System.nanoTime() - lastLongPauseTime;
         
-        if (PortalDebugCommands.toMiB(freeMemory) < 300 && timeFromLongPause < Helper.secondToNano(2)) {
+        if (freeMemory / 1024L / 1024L < 300 && timeFromLongPause < Helper.secondToNano(2)) {
             if (memoryNotEnough) {
                 // show message the second time
                 
@@ -102,7 +101,7 @@ public class GcMonitor {
                 
                 Helper.err(String.format(
                     "Memory: % 2d%% %03d/%03dMB", usedMemory1 * 100L / maxMemory1,
-                    PortalDebugCommands.toMiB(usedMemory1), PortalDebugCommands.toMiB(maxMemory1)
+                    usedMemory1 / 1024L / 1024L, maxMemory1 / 1024L / 1024L
                 ));
             });
             

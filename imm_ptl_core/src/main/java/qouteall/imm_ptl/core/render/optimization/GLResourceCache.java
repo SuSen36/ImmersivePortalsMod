@@ -25,9 +25,8 @@ public class GLResourceCache {
         if (bufferIds.isEmpty()) {
             reserve(1000);
         }
-        
-        int taken = bufferIds.removeInt(bufferIds.size() - 1);
-        return taken;
+
+        return bufferIds.removeInt(bufferIds.size() - 1);
     }
     
     public static void init() {

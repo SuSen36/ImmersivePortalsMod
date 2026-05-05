@@ -20,9 +20,7 @@ import qouteall.imm_ptl.core.ducks.IEFrameBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.GL_DEPTH_COMPONENT;
-import static org.lwjgl.opengl.GL30.GL_DEPTH24_STENCIL8;
-import static org.lwjgl.opengl.GL30.GL_DEPTH32F_STENCIL8;
-import static org.lwjgl.opengl.GL30.GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
+import static org.lwjgl.opengl.GL30.*;
 
 @Mixin(RenderTarget.class)
 public abstract class MixinRenderTarget implements IEFrameBuffer {

@@ -7,9 +7,7 @@ import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.my_util.LimitedLogger;
 
 public class ServerPerformanceMonitor {
-    
-    private static final int sampleNum = 20;
-    
+
     private static PerformanceLevel level = PerformanceLevel.bad;
     
     private static final LimitedLogger limitedLogger = new LimitedLogger(50);

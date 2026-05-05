@@ -4,10 +4,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.imm_ptl.core.McHelper;
 import qouteall.q_misc_util.MiscHelper;
-import qouteall.q_misc_util.my_util.MyTaskList;
 
 import java.util.Objects;
 
@@ -60,19 +58,7 @@ public class ChunkLoader {
         
         return LenientChunkRegion.createLenientChunkRegion(center, radius, world);
     }
-    
-    public void loadChunksAndDo(Runnable runnable) {
-        NewChunkTrackingGraph.addGlobalAdditionalChunkLoader(this);
-        
-        IPGlobal.serverTaskList.addTask(MyTaskList.withDelayCondition(
-            () -> getLoadedChunkNum() < getChunkNum(),
-            MyTaskList.oneShotTask(() -> {
-                NewChunkTrackingGraph.removeGlobalAdditionalChunkLoader(this);
-                runnable.run();
-            })
-        ));
-    }
-    
+
     @Override
     public String toString() {
         return "{" +

@@ -35,8 +35,7 @@ public class FogRendererContext {
             copyContextFromObject, copyContextToObject, false,
             FogRendererContext::new
         );
-        
-        
+
     }
     
     public static void update() {

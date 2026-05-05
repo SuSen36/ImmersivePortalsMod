@@ -14,7 +14,7 @@ import qouteall.imm_ptl.core.portal.PortalPlaceholderBlock;
 @Mixin(Snowball.class)
 public abstract class MixinSnowball extends MixinEntity {
     @Shadow
-    public abstract void onHit(HitResult hitResult);
+    protected abstract void onHit(HitResult hitResult);
     
     @Inject(method = "Lnet/minecraft/world/entity/projectile/Snowball;onHit(Lnet/minecraft/world/phys/HitResult;)V", at = @At(value = "HEAD"), cancellable = true)
     protected void onHit(HitResult hitResult, CallbackInfo ci) {

@@ -15,7 +15,7 @@ import qouteall.imm_ptl.core.portal.PortalPlaceholderBlock;
 public abstract class MixinProjectile extends MixinEntity {
     
     @Shadow
-    public abstract void onHit(HitResult hitResult);
+    protected abstract void onHit(HitResult hitResult);
     
     @Inject(method = "Lnet/minecraft/world/entity/projectile/Projectile;onHit(Lnet/minecraft/world/phys/HitResult;)V", at = @At(value = "HEAD"), cancellable = true)
     protected void onHit(HitResult hitResult, CallbackInfo ci) {

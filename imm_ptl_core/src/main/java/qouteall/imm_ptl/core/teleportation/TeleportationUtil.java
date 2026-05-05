@@ -10,7 +10,6 @@ import qouteall.q_misc_util.Helper;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Calculating teleportation between a moving portal and a moving player is tricky.
@@ -131,7 +130,7 @@ public class TeleportationUtil {
             PortalState.interpolate(lastFrameState, currentFrameState, collisionInfo.tOfCollision, false);
         Vec3 collisionPointMappedToThisFrame = thisTickState.transformPoint(thisTickState.portalLocalPosToWorldPos(new Vec3(
             collisionInfo.portalLocalX, collisionInfo.portalLocalY, 0
-        ))); ;
+        )));
         Vec3 collisionPointMappedToLastFrame = lastFrameState.transformPoint(lastFrameState.portalLocalPosToWorldPos(new Vec3(
             collisionInfo.portalLocalX, collisionInfo.portalLocalY, 0
         )));
@@ -255,44 +254,5 @@ public class TeleportationUtil {
         
         return new Tuple<>(newOtherSideLastTickPos, newOtherSideThisTickPos);
     }
-    
-    /**
-     * When the portal is rotating, the outer point velocity is bigger than inner point velocity.
-     * When the player teleports through portal in a tilted manner,
-     * the this-side point velocity projected to normal may be smaller than the player velocity projected to normal.
-     */
-    @Deprecated
-    private static PortalPointVelocity getConservativePortalPointVelocity(
-        PortalState lastTickState, PortalState thisTickState,
-        Vec3 lastTickPos, Vec3 thisTickPos
-    ) {
-        List<Vec3> localPoses = List.of(
-            lastTickState.worldPosToPortalLocalPos(lastTickPos),
-            lastTickState.worldPosToPortalLocalPos(thisTickPos),
-            thisTickState.worldPosToPortalLocalPos(lastTickPos),
-            thisTickState.worldPosToPortalLocalPos(thisTickPos)
-        );
-        
-        List<PortalPointVelocity> portalPointVelocities = localPoses.stream().map(localPos ->
-            getPortalPointVelocity(
-                lastTickState, thisTickState,
-                localPos.x, localPos.y
-            )
-        ).toList();
-        
-        return new PortalPointVelocity(
-            portalPointVelocities.stream()
-                .map(v -> v.thisSidePointVelocity)
-                .max(Comparator.comparingDouble(
-                    p -> p.dot(lastTickState.getNormal())
-                ))
-                .orElseThrow(),
-            portalPointVelocities.stream()
-                .map(v -> v.otherSidePointVelocity)
-                .max(Comparator.comparingDouble(
-                    p -> p.dot(thisTickState.getContentDirection())
-                ))
-                .orElseThrow()
-        );
-    }
+
 }

@@ -11,7 +11,6 @@ import java.util.Set;
 public class IPCompatMixinPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
-    
     }
     
     @Override
@@ -30,18 +29,15 @@ public class IPCompatMixinPlugin implements IMixinConfigPlugin {
         }
         
         if (mixinClassName.contains("Iris")) {
-            boolean irisLoaded = FabricLoader.getInstance().isModLoaded("iris");
-            return irisLoaded;
+            return FabricLoader.getInstance().isModLoaded("iris");
         }
         
         if (mixinClassName.contains("Sodium")) {
-            boolean sodiumLoaded = FabricLoader.getInstance().isModLoaded("sodium");
-            return sodiumLoaded;
+            return FabricLoader.getInstance().isModLoaded("sodium");
         }
         
         if (mixinClassName.contains("Flywheel")) {
-            boolean flywheelLoaded = FabricLoader.getInstance().isModLoaded("flywheel");
-            return flywheelLoaded;
+            return FabricLoader.getInstance().isModLoaded("flywheel");
         }
         
         return false;

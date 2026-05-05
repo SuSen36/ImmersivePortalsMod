@@ -11,15 +11,10 @@ import qouteall.imm_ptl.core.CHelper;
 import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.imm_ptl.core.IPMcHelper;
 import qouteall.imm_ptl.core.IPModMainClient;
-import qouteall.imm_ptl.core.compat.IPModInfoChecking;
 import qouteall.imm_ptl.core.compat.iris_compatibility.ExperimentalIrisPortalRenderer;
 import qouteall.imm_ptl.core.compat.iris_compatibility.IrisInterface;
 import qouteall.imm_ptl.core.compat.sodium_compatibility.SodiumInterface;
-import qouteall.imm_ptl.core.portal.BreakableMirror;
-import qouteall.imm_ptl.core.portal.EndPortalEntity;
-import qouteall.imm_ptl.core.portal.LoadingIndicatorEntity;
-import qouteall.imm_ptl.core.portal.Mirror;
-import qouteall.imm_ptl.core.portal.Portal;
+import qouteall.imm_ptl.core.portal.*;
 import qouteall.imm_ptl.core.portal.global_portals.GlobalTrackedPortal;
 import qouteall.imm_ptl.core.portal.global_portals.VerticalConnectingPortal;
 import qouteall.imm_ptl.core.portal.global_portals.WorldWrappingPortal;
@@ -106,8 +101,6 @@ public class IPModEntryClient implements ClientModInitializer {
         else {
             Helper.log("Iris is not present");
         }
-        
-        IPModInfoChecking.initClient();
     }
     
 }

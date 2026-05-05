@@ -2,34 +2,22 @@ package qouteall.imm_ptl.core;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConfirmLinkScreen;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.PlayerInfo;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.Validate;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL32;
 import qouteall.imm_ptl.core.ducks.IEClientWorld;
 import qouteall.imm_ptl.core.portal.Portal;
-import qouteall.imm_ptl.core.render.context_management.RenderStates;
 import qouteall.q_misc_util.Helper;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
@@ -89,67 +77,17 @@ public class CHelper {
     public static void printChat(Component text) {
         Minecraft.getInstance().gui.getChat().addMessage(text);
     }
-    
-    public static void openLinkConfirmScreen(
-        Screen parent,
-        String link
-    ) {
-        Minecraft client = Minecraft.getInstance();
-        client.setScreen(new ConfirmLinkScreen(
-            (result) -> {
-                if (result) {
-                    try {
-                        Util.getPlatform().openUri(new URI(link));
-                    }
-                    catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    }
-                }
-                client.setScreen(parent);
-            },
-            link, true
-        ));
-    }
-    
+
     public static Vec3 getCurrentCameraPos() {
         return Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
     }
     
-    public static <T> T withWorldSwitched(Entity entity, Portal portal, Supplier<T> func) {
-        
-        Level oldWorld = entity.level;
-        Vec3 eyePos = McHelper.getEyePos(entity);
-        Vec3 lastTickEyePos = McHelper.getLastTickEyePos(entity);
-        
-        entity.level = portal.getDestinationWorld();
-        McHelper.setEyePos(
-            entity,
-            portal.transformPoint(eyePos),
-            portal.transformPoint(lastTickEyePos)
-        );
-        
-        try {
-            T result = func.get();
-            return result;
-        }
-        finally {
-            entity.level = oldWorld;
-            McHelper.setEyePos(entity, eyePos, lastTickEyePos);
-        }
-    }
-    
     public static Iterable<Entity> getWorldEntityList(Level world) {
-        if (!(world instanceof ClientLevel)) {
-            return (Iterable<Entity>) Collections.emptyList().iterator();
+        if (!(world instanceof ClientLevel clientWorld)) {
+            return (Iterable<Entity>) Collections.emptyIterator();
         }
-        
-        ClientLevel clientWorld = (ClientLevel) world;
+
         return clientWorld.entitiesForRendering();
-    }
-    
-    public static double getSmoothCycles(long unitTicks) {
-        int playerAge = Minecraft.getInstance().player.tickCount;
-        return (playerAge % unitTicks + RenderStates.tickDelta) / (double) unitTicks;
     }
     
     public static void disableDepthClamp() {

@@ -1,13 +1,8 @@
 package qouteall.imm_ptl.core.platform_specific;
 
-import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
 import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.q_misc_util.Helper;
-import qouteall.q_misc_util.MiscHelper;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -17,9 +12,6 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 
 public class IPConfig {
-    // json does not allow comments...
-    public String check_the_wiki_for_more_information = "https://qouteall.fun/immptl/wiki/Config-Options";
-    
     public boolean enableWarning = true;
     public boolean enableMirrorCreation = true;
     public int maxPortalLayer = 5;

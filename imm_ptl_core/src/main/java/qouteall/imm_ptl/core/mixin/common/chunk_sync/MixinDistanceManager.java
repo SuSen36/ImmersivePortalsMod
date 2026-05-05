@@ -39,12 +39,7 @@ public abstract class MixinDistanceManager implements IEChunkTicketManager {
         long long_1 = chunkSectionPos_1.chunk().toLong();
         playersPerChunk.putIfAbsent(long_1, new ObjectOpenHashSet<>());
     }
-    
-    @Override
-    public void mySetWatchDistance(int newWatchDistance) {
-        updatePlayerTickets(newWatchDistance);
-    }
-    
+
     @Override
     public SortedArraySet<Ticket<?>> portal_getTicketSet(long chunkPos) {
         return getTickets(chunkPos);

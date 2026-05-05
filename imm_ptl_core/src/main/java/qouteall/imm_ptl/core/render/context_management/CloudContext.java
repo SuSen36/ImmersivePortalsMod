@@ -33,7 +33,6 @@ public class CloudContext {
     }
     
     public CloudContext() {
-    
     }
     
     private static void cleanup() {

@@ -22,9 +22,7 @@ public class IPMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         if (FabricLoader.getInstance().isModLoaded("porting_lib")) {
-            if (mixinClassName.contains("MixinRenderTarget") || mixinClassName.contains("MixinMainTarget")) {
-                return false;
-            }
+            return !mixinClassName.contains("MixinRenderTarget") && !mixinClassName.contains("MixinMainTarget");
         }
         return true;
     }

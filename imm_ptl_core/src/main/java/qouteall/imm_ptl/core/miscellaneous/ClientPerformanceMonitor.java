@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.imm_ptl.core.chunk_loading.PerformanceLevel;
-import qouteall.imm_ptl.core.commands.PortalDebugCommands;
 import qouteall.q_misc_util.api.McRemoteProcedureCall;
 
 import java.util.ArrayDeque;
@@ -45,7 +44,7 @@ public class ClientPerformanceMonitor {
         long usedMemoryBytes = totalMemoryBytes - freeMemoryBytes;
         long actualFreeMemoryBytes = maxMemoryBytes - usedMemoryBytes;
         
-        int freeMemoryMB = (int) PortalDebugCommands.toMiB(actualFreeMemoryBytes);
+        int freeMemoryMB = (int) (actualFreeMemoryBytes / 1024L / 1024L);
         
         records.addLast(new Record(newFps, freeMemoryMB));
         

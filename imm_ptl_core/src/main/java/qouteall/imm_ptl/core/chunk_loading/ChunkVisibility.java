@@ -21,10 +21,7 @@ import java.util.stream.Stream;
 
 public class ChunkVisibility {
     private static final LimitedLogger limitedLogger = new LimitedLogger(50);
-    
-    private static final int portalLoadingRange = 48;
-    public static final int secondaryPortalLoadingRange = 16;
-    
+
     public static ChunkLoader playerDirectLoader(ServerPlayer player) {
         return new ChunkLoader(
             new DimensionalChunkPos(

@@ -11,7 +11,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -26,7 +25,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -49,7 +47,6 @@ import qouteall.imm_ptl.core.ducks.IEEntityTrackingSection;
 import qouteall.imm_ptl.core.ducks.IESectionedEntityCache;
 import qouteall.imm_ptl.core.ducks.IEThreadedAnvilChunkStorage;
 import qouteall.imm_ptl.core.ducks.IEWorld;
-import qouteall.imm_ptl.core.mc_utils.MyNbtTextFormatter;
 import qouteall.imm_ptl.core.mixin.common.mc_util.IELevelEntityGetterAdapter;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.q_misc_util.Helper;
@@ -75,9 +72,7 @@ import java.util.stream.Stream;
 public class McHelper {
     
     public static IEThreadedAnvilChunkStorage getIEStorage(ResourceKey<Level> dimension) {
-        return (IEThreadedAnvilChunkStorage) (
-            (ServerChunkCache) getServerWorld(dimension).getChunkSource()
-        ).chunkMap;
+        return (IEThreadedAnvilChunkStorage) getServerWorld(dimension).getChunkSource().chunkMap;
     }
     
     public static ArrayList<ServerPlayer> getCopiedPlayerList() {
@@ -95,15 +90,7 @@ public class McHelper {
     public static ServerLevel getOverWorldOnServer() {
         return MiscHelper.getServer().getLevel(Level.OVERWORLD);
     }
-    
-    public static void serverLog(
-        ServerPlayer player,
-        String text
-    ) {
-        Helper.log(text);
-        player.displayClientMessage(Component.literal(text), false);
-    }
-    
+
     public static long getServerGameTime() {
         return getOverWorldOnServer().getGameTime();
     }
@@ -125,9 +112,7 @@ public class McHelper {
             () -> {
                 try {
                     T result = stream.peek(
-                        obj -> {
-                            progress[0] += 1;
-                        }
+                        obj -> progress[0] += 1
                     ).filter(
                         predicate
                     ).findFirst().orElse(null);
@@ -244,13 +229,6 @@ public class McHelper {
             eyePos.subtract(eyeOffset),
             lastTickEyePos.subtract(eyeOffset)
         );
-
-//        float eyeHeight = entity.getStandingEyeHeight();
-//        setPosAndLastTickPos(
-//            entity,
-//            eyePos.add(0, -eyeHeight, 0),
-//            lastTickEyePos.add(0, -eyeHeight, 0)
-//        );
     }
     
     public static double getVehicleY(Entity vehicle, Entity passenger) {
@@ -299,9 +277,7 @@ public class McHelper {
     public static LevelChunk getServerChunkIfPresent(
         ServerLevel world, int x, int z
     ) {
-        ChunkHolder chunkHolder_ = ((IEThreadedAnvilChunkStorage) (
-            (ServerChunkCache) world.getChunkSource()
-        ).chunkMap).ip_getChunkHolder(ChunkPos.asLong(x, z));
+        ChunkHolder chunkHolder_ = ((IEThreadedAnvilChunkStorage) world.getChunkSource().chunkMap).ip_getChunkHolder(ChunkPos.asLong(x, z));
         if (chunkHolder_ == null) {
             return null;
         }
@@ -718,10 +694,6 @@ public class McHelper {
             throw new RuntimeException("Missing dimension " + dim.location());
         }
         return world;
-    }
-    
-    public static Component compoundTagToTextSorted(CompoundTag tag, String indent, int depth) {
-        return new MyNbtTextFormatter(" ", 0).apply(tag);
     }
     
     public static int getMinY(LevelAccessor world) {

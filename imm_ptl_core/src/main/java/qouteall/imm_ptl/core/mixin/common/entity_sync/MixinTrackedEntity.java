@@ -35,10 +35,10 @@ import java.util.Set;
 public abstract class MixinTrackedEntity implements IEEntityTracker {
     @Shadow
     @Final
-    private ServerEntity serverEntity;
+    ServerEntity serverEntity;
     @Shadow
     @Final
-    private Entity entity;
+    Entity entity;
     @Shadow
     @Final
     private int range;
@@ -54,7 +54,7 @@ public abstract class MixinTrackedEntity implements IEEntityTracker {
     private Set<ServerPlayerConnection> seenBy;
     
     @Shadow
-    private SectionPos lastSectionPos;
+    SectionPos lastSectionPos;
     
     @Redirect(
         method = "Lnet/minecraft/server/level/ChunkMap$TrackedEntity;broadcast(Lnet/minecraft/network/protocol/Packet;)V",

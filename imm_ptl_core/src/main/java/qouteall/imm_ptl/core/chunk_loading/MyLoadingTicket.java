@@ -88,17 +88,6 @@ public class MyLoadingTicket {
         );
     }
     
-    public static void loadTemporally(ServerLevel world, ChunkPos centerChunkPos, int radius) {
-        for (int dx = -radius; dx <= radius; dx++) {
-            for (int dz = -radius; dz <= radius; dz++) {
-                loadTemporally(
-                    world,
-                    new ChunkPos(centerChunkPos.x + dx, centerChunkPos.z + dz)
-                );
-            }
-        }
-    }
-    
     public static void onDimensionRemove(ResourceKey<Level> dimension) {
         ServerLevel world = McHelper.getServerWorld(dimension);
         

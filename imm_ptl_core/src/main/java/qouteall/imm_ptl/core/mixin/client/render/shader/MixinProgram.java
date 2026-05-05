@@ -1,7 +1,6 @@
 package qouteall.imm_ptl.core.mixin.client.render.shader;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.preprocessor.GlslPreprocessor;
 import com.mojang.blaze3d.shaders.Program;
 import org.apache.commons.io.IOUtils;

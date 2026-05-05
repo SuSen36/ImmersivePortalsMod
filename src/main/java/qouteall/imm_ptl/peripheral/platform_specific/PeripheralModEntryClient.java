@@ -16,7 +16,5 @@ public class PeripheralModEntryClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         PeripheralModEntryClient.registerBlockRenderLayers();
-        
-        PeripheralModMain.initClient();
     }
 }

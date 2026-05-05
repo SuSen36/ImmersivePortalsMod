@@ -19,6 +19,4 @@ public class MixinServerboundMovePlayerPacket_S implements IEPlayerMoveC2SPacket
     public void setPlayerDimension(ResourceKey<Level> dim) {
         playerDimension = dim;
     }
-    
-    
 }
