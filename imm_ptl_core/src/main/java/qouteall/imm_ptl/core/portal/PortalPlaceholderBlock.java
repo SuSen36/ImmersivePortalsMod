@@ -21,6 +21,7 @@ import qouteall.imm_ptl.core.portal.nether_portal.BreakablePortalEntity;
 
 public class PortalPlaceholderBlock extends Block {
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    public static final EnumProperty<PortalType> PORTAL_TYPE = EnumProperty.create("portal_type", PortalType.class);
     public static final VoxelShape X_AABB = Block.box(
         6.0D,
         0.0D,
@@ -51,9 +52,9 @@ public class PortalPlaceholderBlock extends Block {
     public PortalPlaceholderBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(
-                this.getStateDefinition().any().setValue(
-                    AXIS, Direction.Axis.X
-                )
+                this.getStateDefinition().any()
+                    .setValue(AXIS, Direction.Axis.X)
+                    .setValue(PORTAL_TYPE, PortalType.nether)
         );
     }
     
@@ -70,7 +71,7 @@ public class PortalPlaceholderBlock extends Block {
     
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(AXIS);
+        builder.add(AXIS, PORTAL_TYPE);
     }
     
     @Override
@@ -117,7 +118,6 @@ public class PortalPlaceholderBlock extends Block {
         );
     }
     
-    //---------These are copied from BlockBarrier
     @Override
     public boolean propagatesSkylightDown(
         BlockState blockState_1,
@@ -129,7 +129,7 @@ public class PortalPlaceholderBlock extends Block {
     
     @Override
     public RenderShape getRenderShape(BlockState blockState_1) {
-        return RenderShape.INVISIBLE;
+        return RenderShape.MODEL;
     }
     
     @Environment(EnvType.CLIENT)

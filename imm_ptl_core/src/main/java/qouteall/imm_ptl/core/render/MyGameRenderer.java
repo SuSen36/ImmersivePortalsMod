@@ -14,11 +14,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -267,18 +265,14 @@ public class MyGameRenderer {
     }
     
     public static void renderPlayerItself(Runnable doRenderEntity) {
-        EntityRenderDispatcher entityRenderDispatcher =
-            ((IEWorldRenderer) client.levelRenderer).ip_getEntityRenderDispatcher();
         PlayerInfo playerListEntry = CHelper.getClientPlayerListEntry();
-        GameType originalGameMode = RenderStates.originalGameMode;
-        
+
         Entity player = client.cameraEntity;
         assert player != null;
         
         Vec3 oldPos = player.position();
         Vec3 oldLastTickPos = McHelper.lastTickPosOf(player);
-        GameType oldGameMode = playerListEntry.getGameMode();
-        
+
         McHelper.setPosAndLastTickPos(
             player, RenderStates.originalPlayerPos, RenderStates.originalPlayerLastTickPos
         );
@@ -299,10 +293,7 @@ public class MyGameRenderer {
         double d = cameraPos.x();
         double e = cameraPos.y();
         double f = cameraPos.z();
-        
-        boolean bl2 = client.level.effects().isFoggyAt(Mth.floor(d), Mth.floor(e)) ||
-            client.gui.getBossOverlay().shouldCreateWorldFog();
-        
+
         boolean bl3 = client.level.effects().isFoggyAt(Mth.floor(d), Mth.floor(e)) || client.gui.getBossOverlay().shouldCreateWorldFog();
         
         FogRenderer.setupFog(

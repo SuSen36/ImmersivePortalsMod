@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.imm_ptl.core.portal.EndPortalEntity;
 import qouteall.imm_ptl.core.portal.PortalPlaceholderBlock;
+import qouteall.imm_ptl.core.portal.PortalType;
 
 @Mixin(EnderEyeItem.class)
 public class MixinEnderEyeItem {
@@ -62,9 +63,9 @@ public class MixinEnderEyeItem {
                         for (int dz = 0; dz < 3; ++dz) {
                             world.setBlock(
                                 blockPos_2.offset(dx, 0, dz),
-                                PortalPlaceholderBlock.instance.defaultBlockState().setValue(
-                                    PortalPlaceholderBlock.AXIS, Direction.Axis.Y
-                                ),
+                                PortalPlaceholderBlock.instance.defaultBlockState()
+                                    .setValue(PortalPlaceholderBlock.AXIS, Direction.Axis.Y)
+                                    .setValue(PortalPlaceholderBlock.PORTAL_TYPE, PortalType.end),
                                 2
                             );
                         }

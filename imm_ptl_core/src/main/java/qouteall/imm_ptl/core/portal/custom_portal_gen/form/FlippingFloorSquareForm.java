@@ -16,6 +16,7 @@ import qouteall.imm_ptl.core.McHelper;
 import qouteall.imm_ptl.core.portal.PortalExtension;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.imm_ptl.core.portal.PortalPlaceholderBlock;
+import qouteall.imm_ptl.core.portal.PortalType;
 import qouteall.imm_ptl.core.portal.custom_portal_gen.CustomPortalGeneration;
 import qouteall.imm_ptl.core.portal.custom_portal_gen.SimpleBlockPredicate;
 import qouteall.imm_ptl.core.portal.nether_portal.BlockPortalShape;
@@ -124,8 +125,8 @@ public class FlippingFloorSquareForm extends PortalGenForm {
             toWorld.setBlockAndUpdate(toWorldPos, fromWorld.getBlockState(fromWorldPos));
             toWorld.setBlockAndUpdate(toWorldPos.above(), fromWorld.getBlockState(fromWorldPos.above()));
         });
-        NetherPortalGeneration.fillInPlaceHolderBlocks(fromWorld, fromShape);
-        NetherPortalGeneration.fillInPlaceHolderBlocks(toWorld, toShape);
+        NetherPortalGeneration.fillInPlaceHolderBlocks(fromWorld, fromShape, PortalType.flat);
+        NetherPortalGeneration.fillInPlaceHolderBlocks(toWorld, toShape, PortalType.flat);
         
         GeneralBreakablePortal[] portals = createPortals(fromWorld, toWorld, fromShape, toShape);
         

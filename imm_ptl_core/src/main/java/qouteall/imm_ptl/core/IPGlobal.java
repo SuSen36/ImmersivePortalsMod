@@ -81,10 +81,6 @@ public class IPGlobal {
     
     public static boolean forceMergePortalRendering = false;
     
-    public static boolean netherPortalOverlay = true;
-    
-    public static boolean endPortalOverlay = true;
-    
     public static boolean debugDisableFog = false;
     
     public static int scaleLimit = 30;
@@ -112,6 +108,8 @@ public class IPGlobal {
     
     public static boolean enableNetherPortalEffect = true;
     
+    public static float netherPortalOpacity = 0.7f;
+
     public static boolean tickOnlyIfChunkLoaded = true;
     
     public static boolean allowClientEntityPosInterpolation = true;

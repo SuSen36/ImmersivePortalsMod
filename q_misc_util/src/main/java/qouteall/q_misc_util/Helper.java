@@ -4,12 +4,9 @@ import com.google.common.collect.Streams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.math.Quaternion;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.Dynamic;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -24,19 +21,9 @@ import qouteall.q_misc_util.my_util.IntBox;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,14 +70,7 @@ public class Helper {
         double t = getCollidingT(planePos, planeNormal, point, planeNormal);
         return point.add(planeNormal.scale(t));
     }
-    
-    public static Vec3i getUnitFromAxis(Direction.Axis axis) {
-        return Direction.get(
-            Direction.AxisDirection.POSITIVE,
-            axis
-        ).getNormal();
-    }
-    
+
     public static int getCoordinate(Vec3i v, Direction.Axis axis) {
         return axis.choose(v.getX(), v.getY(), v.getZ());
     }
@@ -155,20 +135,7 @@ public class Helper {
     public static <A, B> Tuple<B, A> swaped(Tuple<A, B> p) {
         return new Tuple<>(p.getB(), p.getA());
     }
-    
-    public static <T> T uniqueOfThree(T a, T b, T c) {
-        if (a.equals(b)) {
-            return c;
-        }
-        else if (b.equals(c)) {
-            return a;
-        }
-        else {
-            assert a.equals(c);
-            return b;
-        }
-    }
-    
+
     public static BlockPos max(BlockPos a, BlockPos b) {
         return new BlockPos(
             Math.max(a.getX(), b.getX()),
@@ -350,17 +317,6 @@ public class Helper {
         return last;
     }
     
-    public static void doNotEatExceptionMessage(
-        Runnable func
-    ) {
-        try {
-            func.run();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
-    
     public static <T> String myToString(
         Stream<T> stream
     ) {
@@ -466,21 +422,7 @@ public class Helper {
             compoundTag.putFloat(name + "W", quaternion.r());
         }
     }
-    
-    @Nullable
-    public static Quaternion getQuaternion(CompoundTag compoundTag, String name) {
-        if (compoundTag.contains(name + "X")) {
-            return new Quaternion(
-                compoundTag.getFloat(name + "X"),
-                compoundTag.getFloat(name + "Y"),
-                compoundTag.getFloat(name + "Z"),
-                compoundTag.getFloat(name + "W")
-            );
-        }
-        else {
-            return null;
-        }
-    }
+
     
     public static ListTag getCompoundList(CompoundTag tag, String name) {
         return tag.getList(name, 10);

@@ -56,7 +56,6 @@
   "imm_ptl.inform_portal_helper": "[Immersive Portals] ポータルフレームの使い方はwikiを参照してください。",
   "imm_ptl.portal_helper_tooltip": "2つの閉じた枠を作成し、火をつけてください。",
   "imm_ptl.incompatible_shape": "[Immersive Portals] 形状が正しくないため、従来型のポータルを変換できませんでした。",
-  "imm_ptl.enable_nether_portal_overlay": "ネザーポータルの重なりを有効化",
   "imm_ptl.increase_loading_range_gradually": "ポータルの描画距離を徐々に増加させる",
   "imm_ptl.stagnate_movement": "ポータルの向こう側が読み込まれていないため、動作を停止しました。",
   "dimension.minecraft.overworld": "オーバーワールド",

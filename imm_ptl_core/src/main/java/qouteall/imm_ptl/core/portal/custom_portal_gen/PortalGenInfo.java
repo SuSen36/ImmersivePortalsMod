@@ -10,6 +10,7 @@ import qouteall.imm_ptl.core.McHelper;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalExtension;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
+import qouteall.imm_ptl.core.portal.PortalType;
 import qouteall.imm_ptl.core.portal.nether_portal.BlockPortalShape;
 import qouteall.imm_ptl.core.portal.nether_portal.BreakablePortalEntity;
 import qouteall.imm_ptl.core.portal.nether_portal.NetherPortalGeneration;
@@ -113,10 +114,10 @@ public class PortalGenInfo {
         MinecraftServer server = MiscHelper.getServer();
         
         NetherPortalGeneration.fillInPlaceHolderBlocks(
-            server.getLevel(from), fromShape
+            server.getLevel(from), fromShape, PortalType.flat
         );
         NetherPortalGeneration.fillInPlaceHolderBlocks(
-            server.getLevel(to), toShape
+            server.getLevel(to), toShape, PortalType.flat
         );
         
         generatedSignal.emit(this);

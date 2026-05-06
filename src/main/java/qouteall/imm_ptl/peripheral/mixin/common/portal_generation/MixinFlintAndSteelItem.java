@@ -10,7 +10,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,14 +29,14 @@ public class MixinFlintAndSteelItem {
         UseOnContext context,
         CallbackInfoReturnable<InteractionResult> cir
     ) {
-        LevelAccessor world = context.getLevel();
+        Level world = context.getLevel();
         if (!world.isClientSide()) {
             BlockPos targetPos = context.getClickedPos();
             Direction side = context.getClickedFace();
             BlockPos firePos = targetPos.relative(side);
             BlockState targetBlockState = world.getBlockState(targetPos);
             Block targetBlock = targetBlockState.getBlock();
-            if (BreakableMirror.isGlass(((Level) world), targetPos) && IPGlobal.enableMirrorCreation) {
+            if (BreakableMirror.isGlass(world, targetPos) && IPGlobal.enableMirrorCreation) {
                 BreakableMirror mirror = BreakableMirror.createMirror(
                     ((ServerLevel) world), targetPos, side
                 );

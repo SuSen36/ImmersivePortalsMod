@@ -1,8 +1,10 @@
 package qouteall.imm_ptl.core.platform_specific;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -62,6 +64,10 @@ public class IPModEntryClient implements ClientModInitializer {
         IPModMainClient.init();
         
         initPortalRenderers();
+        
+        BlockRenderLayerMap.INSTANCE.putBlock(
+            PortalPlaceholderBlock.instance, RenderType.translucent()
+        );
         
         boolean isSodiumPresent =
             FabricLoader.getInstance().isModLoaded("sodium");

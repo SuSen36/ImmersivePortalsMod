@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -62,14 +61,6 @@ import java.util.stream.Collectors;
  */
 public class Portal extends Entity implements PortalLike, IPEntityEventListenableEntity {
     public static EntityType<Portal> entityType;
-    
-    public static record OverlayInfo(
-        BlockState blockState,
-        double opacity,
-        double offset,
-        @Nullable Quaternion rotation
-    ) {
-    }
     
     public static final UUID nullUUID = Util.NIL_UUID;
     private static final AABB nullBox = new AABB(0, 0, 0, 0, 0, 0);
@@ -544,11 +535,6 @@ public class Portal extends Entity implements PortalLike, IPEntityEventListenabl
     @Override
     public boolean isVisible() {
         return visible;
-    }
-    
-    @Nullable
-    public OverlayInfo getActualOverlay() {
-        return null;
     }
     
     public void setIsVisible(boolean visible) {

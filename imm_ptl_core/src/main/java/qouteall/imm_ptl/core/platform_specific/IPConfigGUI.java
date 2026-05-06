@@ -96,17 +96,14 @@ public class IPConfigGUI {
             Component.translatable("imm_ptl.client_performance_adjustment"),
             currConfig.enableClientPerformanceAdjustment
         ).setDefaultValue(true).build();
+        IntegerSliderEntry entryNetherPortalOpacity = builder.entryBuilder().startIntSlider(
+            Component.translatable("imm_ptl.nether_portal_opacity"),
+            (int)(currConfig.netherPortalOpacity * 100),
+            0, 100
+        ).setDefaultValue(70).build();
         BooleanListEntry entryVisibilityPrediction = builder.entryBuilder().startBooleanToggle(
             Component.translatable("imm_ptl.visibility_prediction"),
             currConfig.visibilityPrediction
-        ).setDefaultValue(true).build();
-        BooleanListEntry entryNetherPortalOverlay = builder.entryBuilder().startBooleanToggle(
-            Component.translatable("imm_ptl.enable_nether_portal_overlay"),
-            currConfig.netherPortalOverlay
-        ).setDefaultValue(true).build();
-        BooleanListEntry entryEndPortalOverlay = builder.entryBuilder().startBooleanToggle(
-            Component.translatable("imm_ptl.enable_end_portal_overlay"),
-            currConfig.endPortalOverlay
         ).setDefaultValue(true).build();
         BooleanListEntry entryLightVanillaNetherPortalWhenCrouching = builder.entryBuilder().startBooleanToggle(
             Component.translatable("imm_ptl.light_vanilla_nether_portal_when_crouching"),
@@ -134,8 +131,6 @@ public class IPConfigGUI {
             .build();
         clientSide.addEntry(entryMaxPortalLayer);
         clientSide.addEntry(entryLagAttackProof);
-        clientSide.addEntry(entryNetherPortalOverlay);
-        clientSide.addEntry(entryEndPortalOverlay);
         clientSide.addEntry(entryCompatibilityRenderMode);
         clientSide.addEntry(entryEnableCrossPortalSound);
         clientSide.addEntry(entryReducedPortalRendering);
@@ -146,6 +141,7 @@ public class IPConfigGUI {
         clientSide.addEntry(entryRenderYourselfInPortal);
         clientSide.addEntry(entryCorrectCrossPortalEntityRendering);
         clientSide.addEntry(entryEnableClientPerformanceAdjustment);
+        clientSide.addEntry(entryNetherPortalOpacity);
         
         commonSide.addEntry(entryEnableWarning);
         commonSide.addEntry(entryEnableMirrorCreation);
@@ -179,13 +175,12 @@ public class IPConfigGUI {
                 newConfig.endPortalMode = entryEndPortalMode.getValue();
                 newConfig.looseMovementCheck = entryLooseMovementCheck.getValue();
                 newConfig.visibilityPrediction = entryVisibilityPrediction.getValue();
-                newConfig.netherPortalOverlay = entryNetherPortalOverlay.getValue();
-                newConfig.endPortalOverlay = entryEndPortalOverlay.getValue();
                 newConfig.lightVanillaNetherPortalWhenCrouching = entryLightVanillaNetherPortalWhenCrouching.getValue();
                 newConfig.enableWarning = entryEnableWarning.getValue();
                 newConfig.enableMirrorCreation = entryEnableMirrorCreation.getValue();
                 newConfig.enableCrossPortalSound = entryEnableCrossPortalSound.getValue();
                 newConfig.enableClientPerformanceAdjustment = entryEnableClientPerformanceAdjustment.getValue();
+                newConfig.netherPortalOpacity = entryNetherPortalOpacity.getValue() / 100.0;
                 
                 newConfig.saveConfigFile();
                 newConfig.onConfigChanged();

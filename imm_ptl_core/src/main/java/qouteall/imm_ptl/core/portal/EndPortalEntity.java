@@ -27,18 +27,10 @@ import qouteall.imm_ptl.core.ducks.IEEntity;
 import qouteall.q_misc_util.Helper;
 import qouteall.q_misc_util.MiscHelper;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class EndPortalEntity extends Portal {
     public static EntityType<EndPortalEntity> entityType;
-    
-    private static final OverlayInfo endPortalOverlay = new OverlayInfo(
-        Blocks.END_PORTAL.defaultBlockState(),
-        0.5,
-        0,
-        null
-    );
     
     private EndPortalEntity clientFakedReversePortal;
     
@@ -90,6 +82,16 @@ public class EndPortalEntity extends Portal {
         portal.height = 3;
         
         world.addFreshEntity(portal);
+        
+        BlockPos portalBlockPos = new BlockPos(portalCenter);
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                BlockPos pos = portalBlockPos.offset(dx, 0, dz);
+                if (world.getBlockState(pos).isAir()) {
+                    world.setBlockAndUpdate(pos, Blocks.END_PORTAL.defaultBlockState());
+                }
+            }
+        }
     }
     
     private static void generateScaledViewEndPortal(ServerLevel world, Vec3 portalCenter) {
@@ -242,14 +244,5 @@ public class EndPortalEntity extends Portal {
                 }
             }
         }
-    }
-    
-    @Nullable
-    @Override
-    public OverlayInfo getActualOverlay() {
-        if (IPGlobal.endPortalOverlay) {
-            return endPortalOverlay;
-        }
-        return super.getActualOverlay();
     }
 }

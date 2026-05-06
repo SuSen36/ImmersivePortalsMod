@@ -32,8 +32,6 @@ public class IPConfig {
     public boolean enableAlternateDimensions = true;
     public boolean reducedPortalRendering = false;
     public boolean visibilityPrediction = true;
-    public boolean netherPortalOverlay = true;
-    public boolean endPortalOverlay = true;
     public int scaleLimit = 30;
     public boolean easeCreativePermission = true;
     public boolean easeCommandStickPermission = false;
@@ -43,6 +41,7 @@ public class IPConfig {
     public boolean enableDepthClampForPortalRendering = false;
     public boolean lightVanillaNetherPortalWhenCrouching = false;
     public boolean enableNetherPortalEffect = true;
+    public double netherPortalOpacity = 0.7;
     public boolean enableClientPerformanceAdjustment = true;
     public boolean enableServerPerformanceAdjustment = true;
     public boolean checkModInfoFromInternet = true;
@@ -141,8 +140,6 @@ public class IPConfig {
         IPGlobal.endPortalMode = endPortalMode;
         IPGlobal.reducedPortalRendering = reducedPortalRendering;
         IPGlobal.offsetOcclusionQuery = visibilityPrediction;
-        IPGlobal.netherPortalOverlay = netherPortalOverlay;
-        IPGlobal.endPortalOverlay = endPortalOverlay;
         IPGlobal.scaleLimit = scaleLimit;
         IPGlobal.easeCreativePermission = easeCreativePermission;
         IPGlobal.enableSharedBlockMeshBuffers = sharedBlockMeshBufferOptimization;
@@ -151,6 +148,7 @@ public class IPConfig {
         IPGlobal.enableClippingMechanism = enableClippingMechanism;
         IPGlobal.lightVanillaNetherPortalWhenCrouching = lightVanillaNetherPortalWhenCrouching;
         IPGlobal.enableNetherPortalEffect = enableNetherPortalEffect;
+        IPGlobal.netherPortalOpacity = (float) netherPortalOpacity;
         IPGlobal.enableClientPerformanceAdjustment = enableClientPerformanceAdjustment;
         IPGlobal.enableServerPerformanceAdjustment = enableServerPerformanceAdjustment;
         IPGlobal.enableCrossPortalSound = enableCrossPortalSound;

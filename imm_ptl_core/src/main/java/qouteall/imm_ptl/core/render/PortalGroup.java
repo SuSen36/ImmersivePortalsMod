@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -80,9 +81,7 @@ public class PortalGroup implements PortalLike {
     public AABB getDestAreaBox() {
         if (destAreaBoxCache == null) {
             destAreaBoxCache = (
-                Helper.transformBox(getExactAreaBox(), pos -> {
-                    return getFirstPortal().transformPoint(pos);
-                })
+                Helper.transformBox(getExactAreaBox(), pos -> getFirstPortal().transformPoint(pos))
             );
         }
         
@@ -240,9 +239,7 @@ public class PortalGroup implements PortalLike {
     }
     
     public void purge() {
-        portals.removeIf(portal -> {
-            return portal.isRemoved();
-        });
+        portals.removeIf(Entity::isRemoved);
     }
     
     @Override

@@ -19,6 +19,7 @@ import qouteall.imm_ptl.core.chunk_loading.NewChunkTrackingGraph;
 import qouteall.imm_ptl.core.platform_specific.O_O;
 import qouteall.imm_ptl.core.portal.LoadingIndicatorEntity;
 import qouteall.imm_ptl.core.portal.PortalPlaceholderBlock;
+import qouteall.imm_ptl.core.portal.PortalType;
 import qouteall.imm_ptl.core.portal.custom_portal_gen.PortalGenInfo;
 import qouteall.q_misc_util.Helper;
 import qouteall.q_misc_util.my_util.IntBox;
@@ -85,14 +86,23 @@ public class NetherPortalGeneration {
     public static void setPortalContentBlock(
         ServerLevel world,
         BlockPos pos,
-        Direction.Axis normalAxis
+        Direction.Axis normalAxis,
+        PortalType portalType
     ) {
         world.setBlockAndUpdate(
             pos,
-            PortalPlaceholderBlock.instance.defaultBlockState().setValue(
-                PortalPlaceholderBlock.AXIS, normalAxis
-            )
+            PortalPlaceholderBlock.instance.defaultBlockState()
+                .setValue(PortalPlaceholderBlock.AXIS, normalAxis)
+                .setValue(PortalPlaceholderBlock.PORTAL_TYPE, portalType)
         );
+    }
+    
+    public static void setPortalContentBlock(
+        ServerLevel world,
+        BlockPos pos,
+        Direction.Axis normalAxis
+    ) {
+        setPortalContentBlock(world, pos, normalAxis, PortalType.nether);
     }
     
     public static void startGeneratingPortal(
@@ -281,9 +291,17 @@ public class NetherPortalGeneration {
         ServerLevel world,
         BlockPortalShape blockPortalShape
     ) {
+        fillInPlaceHolderBlocks(world, blockPortalShape, PortalType.nether);
+    }
+    
+    public static void fillInPlaceHolderBlocks(
+        ServerLevel world,
+        BlockPortalShape blockPortalShape,
+        PortalType portalType
+    ) {
         blockPortalShape.area.forEach(
             blockPos -> setPortalContentBlock(
-                world, blockPos, blockPortalShape.axis
+                world, blockPos, blockPortalShape.axis, portalType
             )
         );
     }

@@ -1,13 +1,31 @@
 {
   "variants": {
-    "axis=x": {
-      "model": "minecraft:block/barrier"
+    "portal_type=nether,axis=x": {
+      "model": "minecraft:block/nether_portal_ew"
     },
-    "axis=y": {
-      "model": "minecraft:block/barrier"
+    "portal_type=nether,axis=y": {
+      "model": "minecraft:block/nether_portal_ns"
     },
-    "axis=z": {
-      "model": "minecraft:block/barrier"
+    "portal_type=nether,axis=z": {
+      "model": "minecraft:block/nether_portal_ns"
+    },
+    "portal_type=end,axis=x": {
+      "model": "minecraft:block/end_portal"
+    },
+    "portal_type=end,axis=y": {
+      "model": "minecraft:block/end_portal"
+    },
+    "portal_type=end,axis=z": {
+      "model": "minecraft:block/end_portal"
+    },
+    "portal_type=flat,axis=x": {
+      "model": "immersive_portals:block/flat_portal_x"
+    },
+    "portal_type=flat,axis=y": {
+      "model": "immersive_portals:block/flat_portal_y"
+    },
+    "portal_type=flat,axis=z": {
+      "model": "immersive_portals:block/flat_portal_z"
     }
   }
 }

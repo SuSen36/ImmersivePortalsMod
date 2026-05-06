@@ -26,24 +26,12 @@ public class PortalEntityRenderer extends EntityRenderer<Portal> {
         MultiBufferSource vertexConsumerProvider,
         int light
     ) {
-        
         IPCGlobal.renderer.renderPortalInEntityRenderer(portal);
-        
-        if (OverlayRendering.shouldRenderOverlay(portal)) {
-            OverlayRendering.onRenderPortalEntity(portal, matrixStack, vertexConsumerProvider);
-        }
-        
-        
         super.render(portal, yaw, tickDelta, matrixStack, vertexConsumerProvider, light);
     }
     
     @Override
     public ResourceLocation getTextureLocation(Portal portal) {
-//        if (portal instanceof BreakablePortalEntity) {
-//            if (((BreakablePortalEntity) portal).overlayBlockState != null) {
-//                return SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE;
-//            }
-//        }
         return null;
     }
     

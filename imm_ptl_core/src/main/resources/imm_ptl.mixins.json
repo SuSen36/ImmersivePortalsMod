@@ -73,6 +73,7 @@
     "client.render.MixinLevelRenderer",
     "client.render.MixinLevelRenderer_BeforeIris",
     "client.render.MixinLevelRenderer_Optional",
+    "client.render.MixinModelBlockRenderer",
     "client.render.MixinMultiBufferSourceBufferSource",
     "client.render.MixinRenderChunk",
     "client.render.MixinRenderSystem_Clipping",
