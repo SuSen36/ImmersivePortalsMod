@@ -196,16 +196,21 @@ public class FlippingFloorSquareForm extends PortalGenForm {
             true
         );
         
+        pa.isBifaced = true;
+        pa.isBidirectional = true;
+        
         GeneralBreakablePortal pb = (GeneralBreakablePortal)
             PortalManipulation.createReversePortal(pa, GeneralBreakablePortal.entityType);
+        pb.isBifaced = true;
+        pb.isBidirectional = true;
         
         pa.blockPortalShape = fromShape;
         pb.blockPortalShape = toShape;
+        
         pa.reversePortalId = pb.getUUID();
         pb.reversePortalId = pa.getUUID();
         
-        PortalExtension.get(pa).motionAffinity = 0.1;
-        PortalExtension.get(pb).motionAffinity = 0.1;
+        PortalExtension.initializeClusterBind(pa, pb);
         
         McHelper.spawnServerEntity(pa);
         McHelper.spawnServerEntity(pb);

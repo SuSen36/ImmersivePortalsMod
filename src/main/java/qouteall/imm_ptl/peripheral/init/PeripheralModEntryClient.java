@@ -1,4 +1,4 @@
-package qouteall.imm_ptl.peripheral.platform_specific;
+package qouteall.imm_ptl.peripheral.init;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;

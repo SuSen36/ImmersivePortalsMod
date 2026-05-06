@@ -5,6 +5,7 @@
   "mixins": [
     "common.portal_generation.MixinAbstractFireBlock",
     "common.portal_generation.MixinEnderEyeItem",
+    "common.portal_generation.MixinEndPortalBlock",
     "common.portal_generation.MixinFlintAndSteelItem",
     "common.portal_generation.MixinNetherPortalBlock"
   ],

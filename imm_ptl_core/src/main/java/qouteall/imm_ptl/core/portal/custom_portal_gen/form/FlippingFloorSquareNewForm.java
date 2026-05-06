@@ -7,13 +7,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import qouteall.imm_ptl.core.McHelper;
-import qouteall.imm_ptl.core.portal.PortalType;
 import qouteall.imm_ptl.core.portal.custom_portal_gen.PortalGenInfo;
 import qouteall.imm_ptl.core.portal.custom_portal_gen.SimpleBlockPredicate;
 import qouteall.imm_ptl.core.portal.nether_portal.BlockPortalShape;
-import qouteall.imm_ptl.core.portal.nether_portal.BreakablePortalEntity;
-import qouteall.imm_ptl.core.portal.nether_portal.NetherPortalGeneration;
 import qouteall.q_misc_util.my_util.IntBox;
 
 public class FlippingFloorSquareNewForm extends HeterogeneousForm {
@@ -30,19 +26,6 @@ public class FlippingFloorSquareNewForm extends HeterogeneousForm {
         SimpleBlockPredicate frameBlock
     ) {
         super(generateFrameIfNotFound, areaBlock, frameBlock);
-    }
-    
-    @Override
-    public BreakablePortalEntity[] generatePortalEntitiesAndPlaceholder(PortalGenInfo info) {
-        ServerLevel fromWorld = McHelper.getServerWorld(info.from);
-        ServerLevel toWorld = McHelper.getServerWorld(info.to);
-        NetherPortalGeneration.fillInPlaceHolderBlocks(fromWorld, info.fromShape, PortalType.flat);
-        NetherPortalGeneration.fillInPlaceHolderBlocks(toWorld, info.toShape, PortalType.flat);
-        return FlippingFloorSquareForm.createPortals(
-            fromWorld,
-            toWorld,
-            info.fromShape, info.toShape
-        );
     }
     
     @Override

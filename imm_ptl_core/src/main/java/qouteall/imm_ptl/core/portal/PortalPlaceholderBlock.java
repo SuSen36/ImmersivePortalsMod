@@ -99,7 +99,7 @@ public class PortalPlaceholderBlock extends Block {
                         e -> true
                     ).forEach(
                         portal -> {
-                            ((BreakablePortalEntity) portal).notifyPlaceholderUpdate();
+                            portal.notifyPlaceholderUpdate();
                         }
                     );
                 }

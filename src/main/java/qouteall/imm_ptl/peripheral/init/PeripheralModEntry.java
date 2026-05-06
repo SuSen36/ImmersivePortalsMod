@@ -1,4 +1,4 @@
-package qouteall.imm_ptl.peripheral.platform_specific;
+package qouteall.imm_ptl.peripheral.init;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;

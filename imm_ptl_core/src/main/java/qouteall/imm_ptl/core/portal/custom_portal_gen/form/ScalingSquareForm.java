@@ -1,8 +1,11 @@
 package qouteall.imm_ptl.core.portal.custom_portal_gen.form;
 
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.WorldGenRegion;
@@ -13,6 +16,7 @@ import qouteall.imm_ptl.core.portal.nether_portal.BlockPortalShape;
 import qouteall.imm_ptl.core.portal.nether_portal.NetherPortalGeneration;
 import qouteall.q_misc_util.my_util.IntBox;
 
+import javax.annotation.Nullable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -87,7 +91,7 @@ public class ScalingSquareForm extends NetherPortalLikeForm {
                         fromWorld.dimension(),
                         toWorld.dimension(),
                         fromShape, result,
-                        null,
+                        getFlippingRotation(fromShape.axis),
                         getScale()
                     );
                 }
@@ -132,9 +136,21 @@ public class ScalingSquareForm extends NetherPortalLikeForm {
             toWorld.dimension(),
             fromShape,
             placedShape,
-            null,
+            getFlippingRotation(fromShape.axis),
             getScale()
         );
+    }
+    
+    @Nullable
+    private Quaternion getFlippingRotation(Direction.Axis axis) {
+        if (axis == Direction.Axis.Y) {
+            return new Quaternion(
+                new Vector3f(1, 0, 0),
+                180,
+                true
+            );
+        }
+        return null;
     }
     
     @Override
