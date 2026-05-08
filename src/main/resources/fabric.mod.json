@@ -19,10 +19,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "qouteall.imm_ptl.peripheral.platform_specific.PeripheralModEntry"
+      "qouteall.imm_ptl.peripheral.init.PeripheralModEntry"
     ],
     "client": [
-      "qouteall.imm_ptl.peripheral.platform_specific.PeripheralModEntryClient"
+      "qouteall.imm_ptl.peripheral.init.PeripheralModEntryClient"
     ],
     "modmenu": [
       "qouteall.imm_ptl.core.platform_specific.IPModMenuConfigEntry"
