@@ -90,6 +90,21 @@ public class MyRenderHelper {
                 throw new RuntimeException(e);
             }
         });
+
+        loadShaderSignal.connect((resourceManager, resultConsumer) -> {
+            try {
+                PortalCompositeShaderHelper shader = new PortalCompositeShaderHelper(
+                    getResourceFactory(resourceManager),
+                    "portal_composite",
+                    DefaultVertexFormat.POSITION_COLOR
+                );
+                resultConsumer.accept(shader);
+                portalCompositeShader = shader;
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
     
     // vanilla hardcodes the shader namespace to be "minecraft"
@@ -124,10 +139,39 @@ public class MyRenderHelper {
             uniformH.set((float) h);
         }
     }
+
+    public static class PortalCompositeShaderHelper extends ShaderInstance {
+
+        public final Uniform uniformW;
+        public final Uniform uniformH;
+        public final Uniform uniformClippingEquation;
+
+        public PortalCompositeShaderHelper(
+            ResourceProvider factory, String name, VertexFormat format
+        ) throws IOException {
+            super(factory, name, format);
+
+            uniformW = getUniform("w");
+            uniformH = getUniform("h");
+            uniformClippingEquation = getUniform("imm_ptl_ClippingEquation");
+        }
+
+        void loadWidthHeight(int w, int h) {
+            if (uniformW != null) uniformW.set((float) w);
+            if (uniformH != null) uniformH.set((float) h);
+        }
+
+        void loadClippingEquation(float x, float y, float z, float w) {
+            if (uniformClippingEquation != null) {
+                uniformClippingEquation.set(x, y, z, w);
+            }
+        }
+    }
     
     public static DrawFbInAreaShader drawFbInAreaShader;
     public static ShaderInstance portalAreaShader;
     public static ShaderInstance blitScreenNoBlendShader;
+    public static PortalCompositeShaderHelper portalCompositeShader;
     
     public static void drawPortalAreaWithFramebuffer(
         PortalLike portal,

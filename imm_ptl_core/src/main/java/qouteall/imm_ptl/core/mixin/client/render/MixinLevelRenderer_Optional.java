@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import qouteall.imm_ptl.core.render.FrontClipping;
 import qouteall.imm_ptl.core.render.context_management.PortalRendering;
 import qouteall.imm_ptl.core.render.context_management.RenderStates;
 
@@ -78,6 +77,5 @@ public class MixinLevelRenderer_Optional {
         RenderType renderLayer, PoseStack matrices,
         double x, double y, double z, Matrix4f matrix4f, CallbackInfo ci
     ) {
-        FrontClipping.updateClippingEquationUniformForCurrentShader(false);
     }
 }

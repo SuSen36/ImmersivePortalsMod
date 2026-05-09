@@ -64,8 +64,7 @@ public class MixinAbstractFireBlock {
     private static boolean redirectIsPresent(Optional optional) {
         if (IPGlobal.netherPortalMode != IPGlobal.NetherPortalMode.vanilla) {
             return true;
-        }
-        else {
+        } else {
             return optional.isPresent();
         }
     }

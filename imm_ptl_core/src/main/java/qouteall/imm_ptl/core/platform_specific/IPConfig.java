@@ -37,7 +37,6 @@ public class IPConfig {
     public boolean easeCommandStickPermission = false;
     public boolean enableDatapackPortalGen = true;
     public boolean enableCrossPortalView = true;
-    public boolean enableClippingMechanism = true;
     public boolean enableDepthClampForPortalRendering = false;
     public boolean lightVanillaNetherPortalWhenCrouching = false;
     public boolean enableNetherPortalEffect = true;
@@ -145,7 +144,6 @@ public class IPConfig {
         IPGlobal.enableSharedBlockMeshBuffers = sharedBlockMeshBufferOptimization;
         IPGlobal.enableDatapackPortalGen = enableDatapackPortalGen;
         IPGlobal.enableCrossPortalView = enableCrossPortalView;
-        IPGlobal.enableClippingMechanism = enableClippingMechanism;
         IPGlobal.lightVanillaNetherPortalWhenCrouching = lightVanillaNetherPortalWhenCrouching;
         IPGlobal.enableNetherPortalEffect = enableNetherPortalEffect;
         IPGlobal.netherPortalOpacity = (float) netherPortalOpacity;

@@ -25,8 +25,7 @@ import qouteall.imm_ptl.core.ClientWorldLoader;
 import qouteall.imm_ptl.core.IPGlobal;
 import qouteall.imm_ptl.core.McHelper;
 import qouteall.imm_ptl.core.block_manipulation.BlockManipulationClient;
-import qouteall.imm_ptl.core.compat.iris_compatibility.IrisInterface;
-import qouteall.imm_ptl.core.compat.sodium_compatibility.SodiumInterface;
+import qouteall.imm_ptl.core.compat.ShaderModCompat;
 import qouteall.imm_ptl.core.ducks.IEGameRenderer;
 import qouteall.imm_ptl.core.ducks.IEMinecraftClient;
 import qouteall.imm_ptl.core.ducks.IEParticleManager;
@@ -55,7 +54,7 @@ public class MyGameRenderer {
     public static int vanillaTerrainSetupOverride = 0;
     
     public static boolean enablePortalCaveCulling = true;
-    
+
     public static void init() {
         IPGlobal.clientCleanupSignal.connect(() -> {
             secondaryRenderBuffers.clear();
@@ -161,9 +160,7 @@ public class MyGameRenderer {
         
         ObjectArrayList<LevelRenderer.RenderChunkInfo> newChunkInfoList = VisibleSectionDiscovery.takeList();
         ((IEWorldRenderer) oldWorldRenderer).portal_setChunkInfoList(newChunkInfoList);
-        
-        Object irisPipeline = IrisInterface.invoker.getPipeline(worldRenderer);
-        
+
         //switch
         ((IEMinecraftClient) client).setWorldRenderer(worldRenderer);
         client.level = newWorld;
@@ -187,13 +184,12 @@ public class MyGameRenderer {
             ((IEMinecraftClient) client).ip_setRenderBuffers(newRenderBuffers);
         }
         
-        Object newSodiumContext = SodiumInterface.invoker.createNewContext(renderDistance);
-        SodiumInterface.invoker.switchContextWithCurrentWorldRenderer(newSodiumContext);
-        
+        Object newSodiumContext = null;
+
         ((IEWorldRenderer) worldRenderer).portal_setTransparencyShader(null);
-        
-        IrisInterface.invoker.setPipeline(worldRenderer, null);
-        
+
+        boolean pipelineBypassed = ShaderModCompat.bypassIrisPipeline();
+
         //update lightmap
         if (!RenderStates.isDimensionRendered(newDimension)) {
             helper.lightmapTexture.updateLightTexture(0);
@@ -212,12 +208,14 @@ public class MyGameRenderer {
             });
         } catch (Throwable e) {
             limitedLogger.invoke(e::printStackTrace);
+        } finally {
+            if (pipelineBypassed) {
+                ShaderModCompat.restoreIrisPipeline();
+            }
         }
         
-        SodiumInterface.invoker.switchContextWithCurrentWorldRenderer(newSodiumContext);
-        
         //recover
-        
+
         ((IEMinecraftClient) client).setWorldRenderer(oldWorldRenderer);
         client.level = oldEntityWorld;
         ieGameRenderer.setLightmapTextureManager(oldLightmap);
@@ -245,9 +243,7 @@ public class MyGameRenderer {
         ((IEWorldRenderer) worldRenderer).portal_setFrustum(oldFrustum);
         
         RenderSystem.setProjectionMatrix(oldProjectionMatrix);
-        
-        IrisInterface.invoker.setPipeline(worldRenderer, irisPipeline);
-        
+
         client.getEntityRenderDispatcher()
             .prepare(
                 client.level,

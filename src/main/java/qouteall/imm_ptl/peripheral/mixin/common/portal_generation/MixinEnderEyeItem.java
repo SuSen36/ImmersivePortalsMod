@@ -43,9 +43,8 @@ public class MixinEnderEyeItem {
             !blockState.getValue(EndPortalFrameBlock.HAS_EYE)) {
             if (world.isClientSide) {
                 return InteractionResult.SUCCESS;
-            }
-            else {
-                BlockState blockState_2 = (BlockState) blockState.setValue(
+            } else {
+                BlockState blockState_2 = blockState.setValue(
                     EndPortalFrameBlock.HAS_EYE,
                     true
                 );
@@ -75,7 +74,6 @@ public class MixinEnderEyeItem {
                     
                     EndPortalEntity.onEndPortalComplete(((ServerLevel) world), Vec3.atLowerCornerOf(pattern.getFrontTopLeft()).add(-1.5, 0.5, -1.5));
                 }
-                
                 return InteractionResult.SUCCESS;
             }
         }

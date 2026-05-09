@@ -97,9 +97,7 @@ public class IPGlobal {
     public static boolean enableDatapackPortalGen = true;
     
     public static boolean enableCrossPortalView = true;
-    
-    public static boolean enableClippingMechanism = true;
-    
+
     public static boolean enableWarning = true;
     
     public static boolean enableMirrorCreation = true;

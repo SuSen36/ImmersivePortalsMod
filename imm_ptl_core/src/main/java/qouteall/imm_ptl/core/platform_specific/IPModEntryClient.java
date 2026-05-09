@@ -3,19 +3,11 @@ package qouteall.imm_ptl.core.platform_specific;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import org.apache.commons.lang3.Validate;
-import qouteall.imm_ptl.core.CHelper;
-import qouteall.imm_ptl.core.IPGlobal;
-import qouteall.imm_ptl.core.IPMcHelper;
 import qouteall.imm_ptl.core.IPModMainClient;
-import qouteall.imm_ptl.core.compat.iris_compatibility.ExperimentalIrisPortalRenderer;
-import qouteall.imm_ptl.core.compat.iris_compatibility.IrisInterface;
-import qouteall.imm_ptl.core.compat.sodium_compatibility.SodiumInterface;
 import qouteall.imm_ptl.core.portal.*;
 import qouteall.imm_ptl.core.portal.global_portals.GlobalTrackedPortal;
 import qouteall.imm_ptl.core.portal.global_portals.VerticalConnectingPortal;
@@ -24,8 +16,6 @@ import qouteall.imm_ptl.core.portal.nether_portal.GeneralBreakablePortal;
 import qouteall.imm_ptl.core.portal.nether_portal.NetherPortalEntity;
 import qouteall.imm_ptl.core.render.LoadingIndicatorRenderer;
 import qouteall.imm_ptl.core.render.PortalEntityRenderer;
-import qouteall.q_misc_util.Helper;
-import qouteall.q_misc_util.my_util.MyTaskList;
 
 import java.util.Arrays;
 
@@ -68,45 +58,6 @@ public class IPModEntryClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(
             PortalPlaceholderBlock.instance, RenderType.translucent()
         );
-        
-        boolean isSodiumPresent =
-            FabricLoader.getInstance().isModLoaded("sodium");
-        if (isSodiumPresent) {
-            Helper.log("Sodium is present");
-            
-            SodiumInterface.invoker = new SodiumInterface.OnSodiumPresent();
-            
-            // Sodium compat is pretty ok now. No warning needed.
-//            IPGlobal.clientTaskList.addTask(MyTaskList.oneShotTask(() -> {
-//                if (IPGlobal.enableWarning) {
-//                    CHelper.printChat(
-//                        Component.translatable("imm_ptl.sodium_warning")
-//                            .append(IPMcHelper.getDisableWarningText())
-//                    );
-//                }
-//            }));
-        }
-        else {
-            Helper.log("Sodium is not present");
-        }
-        
-        if (FabricLoader.getInstance().isModLoaded("iris")) {
-            Helper.log("Iris is present");
-            IrisInterface.invoker = new IrisInterface.OnIrisPresent();
-            ExperimentalIrisPortalRenderer.init();
-            
-            IPGlobal.clientTaskList.addTask(MyTaskList.oneShotTask(() -> {
-                if (IPGlobal.enableWarning) {
-                    CHelper.printChat(
-                        Component.translatable("imm_ptl.iris_warning")
-                            .append(IPMcHelper.getDisableWarningText())
-                    );
-                }
-            }));
-        }
-        else {
-            Helper.log("Iris is not present");
-        }
     }
     
 }

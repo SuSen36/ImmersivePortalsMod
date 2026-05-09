@@ -91,15 +91,11 @@ public class CHelper {
     }
     
     public static void disableDepthClamp() {
-        if (IPGlobal.enableClippingMechanism) {
-            GL11.glDisable(GL32.GL_DEPTH_CLAMP);
-        }
+        GL11.glDisable(GL32.GL_DEPTH_CLAMP);
     }
     
     public static void enableDepthClamp() {
-        if (IPGlobal.enableClippingMechanism) {
-            GL11.glEnable(GL32.GL_DEPTH_CLAMP);
-        }
+        GL11.glEnable(GL32.GL_DEPTH_CLAMP);
     }
     
 }

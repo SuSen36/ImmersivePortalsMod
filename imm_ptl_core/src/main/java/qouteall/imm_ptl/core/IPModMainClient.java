@@ -4,11 +4,6 @@ import com.mojang.blaze3d.platform.GlUtil;
 import net.minecraft.client.GraphicsStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import qouteall.imm_ptl.core.compat.IPFlywheelCompat;
-import qouteall.imm_ptl.core.compat.iris_compatibility.ExperimentalIrisPortalRenderer;
-import qouteall.imm_ptl.core.compat.iris_compatibility.IrisCompatibilityPortalRenderer;
-import qouteall.imm_ptl.core.compat.iris_compatibility.IrisInterface;
-import qouteall.imm_ptl.core.compat.iris_compatibility.IrisPortalRenderer;
 import qouteall.imm_ptl.core.miscellaneous.GcMonitor;
 import qouteall.imm_ptl.core.platform_specific.IPNetworkingClient;
 import qouteall.imm_ptl.core.portal.PortalRenderInfo;
@@ -30,7 +25,6 @@ public class IPModMainClient {
     
     public static void switchToCorrectRenderer() {
         if (PortalRendering.isRendering()) {
-            //do not switch when rendering
             return;
         }
         
@@ -41,45 +35,21 @@ public class IPModMainClient {
             }
         }
         
-        if (IrisInterface.invoker.isIrisPresent()) {
-            if (IrisInterface.invoker.isShaders()) {
-                if (IPCGlobal.experimentalIrisPortalRenderer) {
-                    switchRenderer(ExperimentalIrisPortalRenderer.instance);
-                    return;
-                }
-                
-                switch (IPGlobal.renderMode) {
-                    case normal -> switchRenderer(IrisPortalRenderer.instance);
-                    case compatibility -> switchRenderer(IrisCompatibilityPortalRenderer.instance);
-                    case debug -> switchRenderer(IrisCompatibilityPortalRenderer.debugModeInstance);
-                    case none -> switchRenderer(IPCGlobal.rendererDummy);
-                }
-                return;
-            }
-        }
-        
         switch (IPGlobal.renderMode) {
-            case normal -> switchRenderer(IPCGlobal.rendererUsingStencil);
+            case normal -> switchRenderer(IPCGlobal.rendererUsingFrameBufferComposite);
             case compatibility -> switchRenderer(IPCGlobal.rendererUsingFrameBuffer);
             case debug -> switchRenderer(IPCGlobal.rendererDebug);
             case none -> switchRenderer(IPCGlobal.rendererDummy);
         }
-        
     }
     
     private static void switchRenderer(PortalRenderer renderer) {
         if (IPCGlobal.renderer != renderer) {
             Helper.log("switched to renderer " + renderer.getClass());
             IPCGlobal.renderer = renderer;
-            
-            if (IrisInterface.invoker.isShaders()) {
-                IrisInterface.invoker.reloadPipelines();
-            }
         }
     }
 
-    
-    // TODO check whether it still have issue on Intel videocard
     private static void showIntelVideoCardWarning() {
         IPGlobal.clientTaskList.addTask(MyTaskList.withDelayCondition(
             () -> Minecraft.getInstance().level == null,
@@ -97,18 +67,16 @@ public class IPModMainClient {
         ClientWorldLoader.init();
         
         Minecraft.getInstance().execute(() -> {
-            ShaderCodeTransformation.init();
-            
             MyRenderHelper.init();
             
             IPCGlobal.rendererUsingStencil = new RendererUsingStencil();
             IPCGlobal.rendererUsingFrameBuffer = new RendererUsingFrameBuffer();
+            IPCGlobal.rendererUsingFrameBufferComposite = new RendererUsingFrameBufferComposite();
             
-            IPCGlobal.renderer = IPCGlobal.rendererUsingStencil;
+            IPCGlobal.renderer = IPCGlobal.rendererUsingFrameBufferComposite;
             IPCGlobal.clientTeleportationManager = new ClientTeleportationManager();
         });
 
-        
         CrossPortalEntityRenderer.init();
         
         GLResourceCache.init();
@@ -123,8 +91,6 @@ public class IPModMainClient {
         
         GcMonitor.initClient();
         
-//        showPreviewWarning();
-        
         showIntelVideoCardWarning();
         
         StableClientTimer.init();
@@ -134,12 +100,6 @@ public class IPModMainClient {
         VisibleSectionDiscovery.init();
         
         MyBuiltChunkStorage.init();
-        
-        IPFlywheelCompat.init();
 
-//        InvalidateRenderStateCallback.EVENT.register(()->{
-//            Helper.log("reload levelrenderer " + Minecraft.getInstance().level.dimension().location());
-//        });
     }
-    
 }

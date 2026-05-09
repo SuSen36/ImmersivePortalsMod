@@ -8,19 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import qouteall.imm_ptl.core.miscellaneous.IPVanillaCopy;
-import qouteall.imm_ptl.core.render.ShaderCodeTransformation;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-// 800 priority to avoid clash with iris
 @Mixin(value = Program.class, priority = 800)
 public class MixinProgram {
-    /**
-     * @author qouteall
-     * @reason make the logic clear (Iris redirects it)
-     */
     @IPVanillaCopy
     @Overwrite
     public static int compileShaderInternal(
@@ -31,16 +25,13 @@ public class MixinProgram {
         if (shaderCode == null) {
             throw new IOException("Could not load program " + type.getName());
         }
-        
-        String transformedShaderCode =
-            ShaderCodeTransformation.transform(type, name, shaderCode);
-        
+
         int shaderId = GlStateManager.glCreateShader(type.getGlType());
-        
-        GlStateManager.glShaderSource(shaderId, loader.process(transformedShaderCode));
-        
+
+        GlStateManager.glShaderSource(shaderId, loader.process(shaderCode));
+
         GlStateManager.glCompileShader(shaderId);
-        
+
         if (GlStateManager.glGetShaderi(shaderId, 35713) == 0) {
             String errorMessage = StringUtils.trim(
                 GlStateManager.glGetShaderInfoLog(shaderId, 32768)

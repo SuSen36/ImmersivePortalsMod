@@ -35,8 +35,6 @@ import qouteall.imm_ptl.core.CHelper;
 import qouteall.imm_ptl.core.ClientWorldLoader;
 import qouteall.imm_ptl.core.IPCGlobal;
 import qouteall.imm_ptl.core.IPGlobal;
-import qouteall.imm_ptl.core.compat.iris_compatibility.IrisInterface;
-import qouteall.imm_ptl.core.compat.sodium_compatibility.SodiumInterface;
 import qouteall.imm_ptl.core.ducks.IEWorldRenderer;
 import qouteall.imm_ptl.core.render.*;
 import qouteall.imm_ptl.core.render.context_management.PortalRendering;
@@ -283,8 +281,7 @@ public abstract class MixinLevelRenderer implements IEWorldRenderer {
     }
     
     private boolean ip_allowOverrideTerrainSetup() {
-        return !SodiumInterface.invoker.isSodiumPresent()
-            && !IrisInterface.invoker.isRenderingShadowMap();
+        return true;
     }
     
     @Inject(
@@ -507,9 +504,7 @@ public abstract class MixinLevelRenderer implements IEWorldRenderer {
     private void onRenderSkyBegin(PoseStack poseStack, Matrix4f matrix4f, float f, Camera camera, boolean bl, Runnable runnable, CallbackInfo ci) {
         if (PortalRendering.isRendering()) {
             if (PortalRendering.getRenderingPortal().isFuseView()) {
-                if (!IrisInterface.invoker.isShaders()) {
-                    ci.cancel();
-                }
+                ci.cancel();
             }
         }
         
@@ -591,10 +586,8 @@ public abstract class MixinLevelRenderer implements IEWorldRenderer {
     )
     private void onIsChunkCompiled(BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
         if (PortalRendering.isRendering()) {
-            if (!SodiumInterface.invoker.isSodiumPresent()) {
-                if (viewArea instanceof MyBuiltChunkStorage myBuiltChunkStorage) {
-                    cir.setReturnValue(ip_isChunkCompiled(myBuiltChunkStorage, blockPos));
-                }
+            if (viewArea instanceof MyBuiltChunkStorage myBuiltChunkStorage) {
+                cir.setReturnValue(ip_isChunkCompiled(myBuiltChunkStorage, blockPos));
             }
         }
     }

@@ -69,9 +69,7 @@ public class ViewAreaRenderer {
         
         shader.MODEL_VIEW_MATRIX.set(modelViewMatrix);
         shader.PROJECTION_MATRIX.set(projectionMatrix);
-        
-        FrontClipping.updateClippingEquationUniformForCurrentShader(false);
-        
+
         shader.apply();
         
         ViewAreaRenderer.buildPortalViewAreaTrianglesBuffer(

@@ -8,6 +8,7 @@ public class IPCGlobal {
     public static PortalRenderer renderer;
     public static RendererUsingStencil rendererUsingStencil;
     public static RendererUsingFrameBuffer rendererUsingFrameBuffer;
+    public static RendererUsingFrameBufferComposite rendererUsingFrameBufferComposite;
     public static RendererDummy rendererDummy = new RendererDummy();
     public static RendererDebug rendererDebug = new RendererDebug();
     
@@ -23,10 +24,5 @@ public class IPCGlobal {
     
     public static boolean useSuperAdvancedFrustumCulling = true;
     public static boolean earlyFrustumCullingPortal = true;
-    
     public static boolean useAnotherStencilFormat = false;
-    
-    public static boolean experimentalIrisPortalRenderer = false;
-    
-    public static boolean debugEnableStencilWithIris = false;
 }

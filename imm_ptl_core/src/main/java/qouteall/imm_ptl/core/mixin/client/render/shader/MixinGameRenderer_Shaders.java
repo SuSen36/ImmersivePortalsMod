@@ -1,5 +1,6 @@
 package qouteall.imm_ptl.core.mixin.client.render.shader;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -9,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import qouteall.imm_ptl.core.IPCGlobal;
 import qouteall.imm_ptl.core.render.MyRenderHelper;
 
 import java.util.Map;
@@ -28,5 +30,19 @@ public class MixinGameRenderer_Shaders {
                 shaders.put(shader.getName(), shader);
             }
         );
+    }
+
+    @Inject(
+        method = "renderLevel",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/renderer/LevelRenderer;renderLevel(Lcom/mojang/blaze3d/vertex/PoseStack;FJZLnet/minecraft/client/Camera;Lnet/minecraft/client/renderer/GameRenderer;Lnet/minecraft/client/renderer/LightTexture;Lcom/mojang/math/Matrix4f;)V",
+            shift = At.Shift.AFTER
+        )
+    )
+    private void onAfterLevelRendering(float partialTick, long nanoTime, PoseStack matrixStack, CallbackInfo ci) {
+        if (IPCGlobal.renderer != null) {
+            IPCGlobal.renderer.onAfterLevelRendering(matrixStack);
+        }
     }
 }

@@ -39,6 +39,8 @@ public abstract class PortalRenderer {
     
     public abstract void onAfterTranslucentRendering(PoseStack matrixStack);
     
+    public void onAfterLevelRendering(PoseStack matrixStack) {}
+    
     // will be called when rendering portal
     public abstract void onHandRenderingEnded(PoseStack matrixStack);
     
@@ -288,7 +290,5 @@ public abstract class PortalRenderer {
     public static boolean shouldApplyScaleToModelView(PortalLike portal) {
         return portal.hasScaling() && portal.isFuseView();
     }
-    
-    public void onBeginIrisTranslucentRendering(PoseStack matrixStack) {}
-    
+
 }

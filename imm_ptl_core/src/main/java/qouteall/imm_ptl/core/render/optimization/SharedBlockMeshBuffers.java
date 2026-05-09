@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.Validate;
 import qouteall.imm_ptl.core.CHelper;
 import qouteall.imm_ptl.core.IPGlobal;
-import qouteall.imm_ptl.core.compat.sodium_compatibility.SodiumInterface;
 import qouteall.q_misc_util.Helper;
 
 import javax.annotation.Nullable;
@@ -36,9 +35,6 @@ public class SharedBlockMeshBuffers {
     public static ConcurrentLinkedQueue<ChunkBufferBuilderPack> threadBuffers;
     
     public static boolean isEnabled() {
-        if (SodiumInterface.invoker.isSodiumPresent()) {
-            return false;
-        }
         return IPGlobal.enableSharedBlockMeshBuffers;
     }
     
